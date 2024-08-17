@@ -2,7 +2,6 @@ services:
   database:
     env_file: 
       - .env
-      - secret.env
     container_name: simple_log_database
     image: postgres:latest
     ports:
