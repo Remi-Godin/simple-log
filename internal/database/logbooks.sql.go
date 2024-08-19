@@ -7,25 +7,39 @@ package database
 
 import (
 	"context"
+	"database/sql"
 )
 
-const getLogbooksOwnedBy = `-- name: GetLogbooksOwnedBy :many
-SELECT owned_by.LogbookId FROM owned_by NATURAL JOIN users WHERE owned_by.UserId=$1
+const deleteLogbook = `-- name: DeleteLogbook :execresult
+DELETE FROM logbooks WHERE LogbookId=$1
 `
 
-func (q *Queries) GetLogbooksOwnedBy(ctx context.Context, userid int32) ([]int32, error) {
-	rows, err := q.db.QueryContext(ctx, getLogbooksOwnedBy, userid)
+func (q *Queries) DeleteLogbook(ctx context.Context, logbookid int32) (sql.Result, error) {
+	return q.db.ExecContext(ctx, deleteLogbook, logbookid)
+}
+
+const getLogbooksOwnedBy = `-- name: GetLogbooksOwnedBy :many
+SELECT 
+LogbookId,
+Title,
+OwnedBy 
+FROM logbooks 
+WHERE OwnedBy=$1
+`
+
+func (q *Queries) GetLogbooksOwnedBy(ctx context.Context, ownedby int32) ([]Logbook, error) {
+	rows, err := q.db.QueryContext(ctx, getLogbooksOwnedBy, ownedby)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []int32
+	var items []Logbook
 	for rows.Next() {
-		var logbookid int32
-		if err := rows.Scan(&logbookid); err != nil {
+		var i Logbook
+		if err := rows.Scan(&i.Logbookid, &i.Title, &i.Ownedby); err != nil {
 			return nil, err
 		}
-		items = append(items, logbookid)
+		items = append(items, i)
 	}
 	if err := rows.Close(); err != nil {
 		return nil, err
@@ -34,4 +48,18 @@ func (q *Queries) GetLogbooksOwnedBy(ctx context.Context, userid int32) ([]int32
 		return nil, err
 	}
 	return items, nil
+}
+
+const insertNewLogbook = `-- name: InsertNewLogbook :execresult
+INSERT INTO logbooks(Title,OwnedBy) VALUES
+($1,$2)
+`
+
+type InsertNewLogbookParams struct {
+	Title   string
+	Ownedby int32
+}
+
+func (q *Queries) InsertNewLogbook(ctx context.Context, arg InsertNewLogbookParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, insertNewLogbook, arg.Title, arg.Ownedby)
 }

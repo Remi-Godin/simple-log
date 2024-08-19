@@ -1,35 +1,47 @@
 -- name: GetAllEntriesFromLogbook :many
-SELECT 
-entries.EntryId,
-entries.Title,
-entries.Description,
-entries.CreatedOn,
-entries.CreatedBy 
+SELECT
+EntryId,
+Title,
+Description,
+CreatedOn,
+CreatedBy
 FROM entries 
-NATURAL JOIN belongs_to 
-WHERE belongs_to.LogbookId=$1;
+WHERE LogbookId=$1;
 
 -- name: GetLastNEntriesFromLogbook :many
-SELECT 
-entries.EntryId,
-entries.Title,
-entries.Description,
-entries.CreatedOn,
-entries.CreatedBy 
+SELECT
+EntryId,
+Title,
+Description,
+CreatedOn,
+CreatedBy
 FROM entries 
-NATURAL JOIN belongs_to 
-WHERE belongs_to.LogbookId=$1 
-ORDER BY entries.CreatedOn 
-LIMIT $2 
+WHERE LogbookId=$1
+LIMIT $2
 OFFSET $3;
 
 -- name: GetEntryFromLogbook :one
-SELECT 
-entries.EntryId,
-entries.Title,
-entries.Description,
-entries.CreatedOn,
-entries.CreatedBy 
+SELECT
+EntryId,
+Title,
+Description,
+CreatedOn,
+CreatedBy
 FROM entries 
-NATURAL JOIN belongs_to
-WHERE belongs_to.LogbookId=$1 AND entries.EntryId=$2;
+WHERE EntryId=$1;
+
+-- name: GetLogbookAndOwnerFromEntry :one
+SELECT 
+entries.LogbookId,
+logbooks.OwnedBy 
+FROM logbooks 
+JOIN entries 
+ON entries.LogbookId = logbooks.LogbookId
+WHERE EntryId=$1;
+
+-- name: InsertNewEntryInLogbook :execresult
+INSERT INTO entries(Title,Description,CreatedBy,LogbookId) VALUES
+($1,$2,$3,$4);
+
+-- name: DeleteEntryFromLogbook :execresult
+DELETE FROM entries WHERE EntryId=$1;

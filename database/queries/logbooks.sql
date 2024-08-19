@@ -1,2 +1,14 @@
 -- name: GetLogbooksOwnedBy :many
-SELECT owned_by.LogbookId FROM owned_by NATURAL JOIN users WHERE owned_by.UserId=$1;
+SELECT 
+LogbookId,
+Title,
+OwnedBy 
+FROM logbooks 
+WHERE OwnedBy=$1;
+
+-- name: InsertNewLogbook :execresult
+INSERT INTO logbooks(Title,OwnedBy) VALUES
+($1,$2);
+
+-- name: DeleteLogbook :execresult
+DELETE FROM logbooks WHERE LogbookId=$1;
