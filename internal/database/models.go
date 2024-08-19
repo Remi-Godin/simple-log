@@ -8,27 +8,19 @@ import (
 	"time"
 )
 
-type BelongsTo struct {
-	Entryid   int32
-	Logbookid int32
-}
-
 type Entry struct {
 	Entryid     int32
 	Title       string
 	Description string
 	Createdon   time.Time
 	Createdby   int32
+	Logbookid   int32
 }
 
 type Logbook struct {
 	Logbookid int32
 	Title     string
-}
-
-type OwnedBy struct {
-	Logbookid int32
-	Userid    int32
+	Ownedby   int32
 }
 
 type User struct {
