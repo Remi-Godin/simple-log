@@ -5,5 +5,5 @@ services:
     container_name: simple_log_database
     image: postgres:latest
     ports:
-      - 5432:5432
+      - $DB_PORT:5432
     restart: always
