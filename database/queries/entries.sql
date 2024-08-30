@@ -8,7 +8,7 @@ CreatedBy
 FROM entries 
 WHERE LogbookId=$1;
 
--- name: GetLastNEntriesFromLogbook :many
+-- name: GetEntriesFromLogbook :many
 SELECT
 EntryId,
 Title,

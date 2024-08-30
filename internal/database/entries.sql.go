@@ -67,6 +67,62 @@ func (q *Queries) GetAllEntriesFromLogbook(ctx context.Context, logbookid int32)
 	return items, nil
 }
 
+const getEntriesFromLogbook = `-- name: GetEntriesFromLogbook :many
+SELECT
+EntryId,
+Title,
+Description,
+CreatedOn,
+CreatedBy
+FROM entries 
+WHERE LogbookId=$1
+LIMIT $2
+OFFSET $3
+`
+
+type GetEntriesFromLogbookParams struct {
+	Logbookid int32
+	Limit     int32
+	Offset    int32
+}
+
+type GetEntriesFromLogbookRow struct {
+	Entryid     int32
+	Title       string
+	Description string
+	Createdon   time.Time
+	Createdby   int32
+}
+
+func (q *Queries) GetEntriesFromLogbook(ctx context.Context, arg GetEntriesFromLogbookParams) ([]GetEntriesFromLogbookRow, error) {
+	rows, err := q.db.QueryContext(ctx, getEntriesFromLogbook, arg.Logbookid, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetEntriesFromLogbookRow
+	for rows.Next() {
+		var i GetEntriesFromLogbookRow
+		if err := rows.Scan(
+			&i.Entryid,
+			&i.Title,
+			&i.Description,
+			&i.Createdon,
+			&i.Createdby,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getEntryFromLogbook = `-- name: GetEntryFromLogbook :one
 SELECT
 EntryId,
@@ -97,62 +153,6 @@ func (q *Queries) GetEntryFromLogbook(ctx context.Context, entryid int32) (GetEn
 		&i.Createdby,
 	)
 	return i, err
-}
-
-const getLastNEntriesFromLogbook = `-- name: GetLastNEntriesFromLogbook :many
-SELECT
-EntryId,
-Title,
-Description,
-CreatedOn,
-CreatedBy
-FROM entries 
-WHERE LogbookId=$1
-LIMIT $2
-OFFSET $3
-`
-
-type GetLastNEntriesFromLogbookParams struct {
-	Logbookid int32
-	Limit     int32
-	Offset    int32
-}
-
-type GetLastNEntriesFromLogbookRow struct {
-	Entryid     int32
-	Title       string
-	Description string
-	Createdon   time.Time
-	Createdby   int32
-}
-
-func (q *Queries) GetLastNEntriesFromLogbook(ctx context.Context, arg GetLastNEntriesFromLogbookParams) ([]GetLastNEntriesFromLogbookRow, error) {
-	rows, err := q.db.QueryContext(ctx, getLastNEntriesFromLogbook, arg.Logbookid, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []GetLastNEntriesFromLogbookRow
-	for rows.Next() {
-		var i GetLastNEntriesFromLogbookRow
-		if err := rows.Scan(
-			&i.Entryid,
-			&i.Title,
-			&i.Description,
-			&i.Createdon,
-			&i.Createdby,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
 }
 
 const getLogbookAndOwnerFromEntry = `-- name: GetLogbookAndOwnerFromEntry :one
