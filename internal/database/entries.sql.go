@@ -12,11 +12,16 @@ import (
 )
 
 const deleteEntryFromLogbook = `-- name: DeleteEntryFromLogbook :execresult
-DELETE FROM entries WHERE EntryId=$1
+DELETE FROM entries WHERE EntryId=$1 AND LogbookId=$2
 `
 
-func (q *Queries) DeleteEntryFromLogbook(ctx context.Context, entryid int32) (sql.Result, error) {
-	return q.db.ExecContext(ctx, deleteEntryFromLogbook, entryid)
+type DeleteEntryFromLogbookParams struct {
+	Entryid   int32
+	Logbookid int32
+}
+
+func (q *Queries) DeleteEntryFromLogbook(ctx context.Context, arg DeleteEntryFromLogbookParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, deleteEntryFromLogbook, arg.Entryid, arg.Logbookid)
 }
 
 const getAllEntriesFromLogbook = `-- name: GetAllEntriesFromLogbook :many
@@ -67,39 +72,7 @@ func (q *Queries) GetAllEntriesFromLogbook(ctx context.Context, logbookid int32)
 	return items, nil
 }
 
-const getEntryFromLogbook = `-- name: GetEntryFromLogbook :one
-SELECT
-EntryId,
-Title,
-Description,
-CreatedOn,
-CreatedBy
-FROM entries 
-WHERE EntryId=$1
-`
-
-type GetEntryFromLogbookRow struct {
-	Entryid     int32
-	Title       string
-	Description string
-	Createdon   time.Time
-	Createdby   int32
-}
-
-func (q *Queries) GetEntryFromLogbook(ctx context.Context, entryid int32) (GetEntryFromLogbookRow, error) {
-	row := q.db.QueryRowContext(ctx, getEntryFromLogbook, entryid)
-	var i GetEntryFromLogbookRow
-	err := row.Scan(
-		&i.Entryid,
-		&i.Title,
-		&i.Description,
-		&i.Createdon,
-		&i.Createdby,
-	)
-	return i, err
-}
-
-const getLastNEntriesFromLogbook = `-- name: GetLastNEntriesFromLogbook :many
+const getEntriesFromLogbook = `-- name: GetEntriesFromLogbook :many
 SELECT
 EntryId,
 Title,
@@ -112,13 +85,13 @@ LIMIT $2
 OFFSET $3
 `
 
-type GetLastNEntriesFromLogbookParams struct {
+type GetEntriesFromLogbookParams struct {
 	Logbookid int32
 	Limit     int32
 	Offset    int32
 }
 
-type GetLastNEntriesFromLogbookRow struct {
+type GetEntriesFromLogbookRow struct {
 	Entryid     int32
 	Title       string
 	Description string
@@ -126,15 +99,15 @@ type GetLastNEntriesFromLogbookRow struct {
 	Createdby   int32
 }
 
-func (q *Queries) GetLastNEntriesFromLogbook(ctx context.Context, arg GetLastNEntriesFromLogbookParams) ([]GetLastNEntriesFromLogbookRow, error) {
-	rows, err := q.db.QueryContext(ctx, getLastNEntriesFromLogbook, arg.Logbookid, arg.Limit, arg.Offset)
+func (q *Queries) GetEntriesFromLogbook(ctx context.Context, arg GetEntriesFromLogbookParams) ([]GetEntriesFromLogbookRow, error) {
+	rows, err := q.db.QueryContext(ctx, getEntriesFromLogbook, arg.Logbookid, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetLastNEntriesFromLogbookRow
+	var items []GetEntriesFromLogbookRow
 	for rows.Next() {
-		var i GetLastNEntriesFromLogbookRow
+		var i GetEntriesFromLogbookRow
 		if err := rows.Scan(
 			&i.Entryid,
 			&i.Title,
@@ -153,6 +126,44 @@ func (q *Queries) GetLastNEntriesFromLogbook(ctx context.Context, arg GetLastNEn
 		return nil, err
 	}
 	return items, nil
+}
+
+const getEntryFromLogbook = `-- name: GetEntryFromLogbook :one
+SELECT
+EntryId,
+Title,
+Description,
+CreatedOn,
+CreatedBy
+FROM entries 
+WHERE EntryId=$1
+AND LogbookId=$2
+`
+
+type GetEntryFromLogbookParams struct {
+	Entryid   int32
+	Logbookid int32
+}
+
+type GetEntryFromLogbookRow struct {
+	Entryid     int32
+	Title       string
+	Description string
+	Createdon   time.Time
+	Createdby   int32
+}
+
+func (q *Queries) GetEntryFromLogbook(ctx context.Context, arg GetEntryFromLogbookParams) (GetEntryFromLogbookRow, error) {
+	row := q.db.QueryRowContext(ctx, getEntryFromLogbook, arg.Entryid, arg.Logbookid)
+	var i GetEntryFromLogbookRow
+	err := row.Scan(
+		&i.Entryid,
+		&i.Title,
+		&i.Description,
+		&i.Createdon,
+		&i.Createdby,
+	)
+	return i, err
 }
 
 const getLogbookAndOwnerFromEntry = `-- name: GetLogbookAndOwnerFromEntry :one

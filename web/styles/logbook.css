@@ -1,0 +1,162 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    background: #555;
+    height: 4em;
+}
+
+footer {
+    background: #444;
+    height: 2em;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    background: #888;
+    flex: 1;
+    overflow: hidden;
+}
+
+.entry-container {
+    flex: 1;
+    overflow-y: scroll;
+}
+
+.logbook-entry {
+    margin: 0.5em;
+    background: #eee;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5em;
+    overflow: hidden;
+    box-shadow: 0px 10px 8px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.1s ease;
+}
+
+.logbook-entry:hover {
+    transform: scale(1.008);
+}
+
+.logbook-header {
+    display: flex;
+    flex-direction: row;
+    background: #23395b;
+    height: 3em;
+}
+
+
+.entry-header {
+    background: #23395b;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 1em;
+    padding: 0.6em;
+}
+
+.entry-body {
+    background: #e9ecef;
+    display: flex;
+    flex-direction: column;
+    min-height: 5em;
+    flex-grow: 1;
+}
+
+article {
+    margin: 0.5em;
+}
+
+.entry-footer {
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: row;
+    height: 1.3em;
+    align-items: center;
+}
+
+.entry-footer p {
+    margin: 0em;
+}
+
+.entry-title {
+    color: #fff;
+    flex: 1;
+    margin-left: 0.2em;
+    font-size: 1.5em;
+}
+
+.entry-desc {
+    flex: 1;
+    font-size: 1.3em;
+}
+
+.entry-timestamp {
+    flex: 1;
+    margin: 0em;
+}
+
+.entry-timestamp {
+    margin-left: 0.2em;
+}
+
+.entry-createby {
+    flex: 1;
+}
+
+.entry-createdby p {
+    margin-right: 0.2em;
+}
+
+.new-entry-container {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 1em;
+}
+
+.new-entry-header {
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    width: 20em;
+    height: 2em;
+    background: #aaa;
+    padding: 0.2em;
+}
+
+.new-entry-content {
+    padding: 0.5em;
+    align-items: left;
+    background: #eee;
+    flex: 1;
+}
+
+.logo {
+    flex: 1;
+}
+
+.add-button {
+    flex: 1;
+}

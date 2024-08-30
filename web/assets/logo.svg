@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="60.752228mm"
+   height="10.202301mm"
+   viewBox="0 0 60.752228 10.202301"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="3.8876824"
+     inkscape:cx="85.012089"
+     inkscape:cy="40.383958"
+     inkscape:window-width="2304"
+     inkscape:window-height="2091"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g18756" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-17.424424,-11.300603)">
+    <g
+       id="g18107"
+       transform="translate(-0.19390215,-11.605874)">
+      <g
+         id="g18756">
+        <text
+           xml:space="preserve"
+           style="font-size:10.5833px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:Ubuntu;word-spacing:0px;stroke-width:0.264583"
+           x="17.226744"
+           y="31.119118"
+           id="text6194"><tspan
+             sodipodi:role="line"
+             id="tspan6192"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu Bold';stroke-width:0.264583"
+             x="17.226744"
+             y="31.119118">Simple<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Ubuntu;-inkscape-font-specification:Ubuntu"
+   id="tspan10684">Log</tspan></tspan></text>
+        <path
+           d="m 72.318998,24.477678 c -0.498324,3.88e-4 -0.759529,0.0067 -0.962,0.109885 -0.189745,0.09668 -0.344009,0.250939 -0.440684,0.440684 -0.10991,0.215706 -0.10991,0.498082 -0.10991,1.062839 v 4.840301 c 0,0.564752 0,0.847153 0.10991,1.062849 0.09668,0.18973 0.250939,0.344015 0.440684,0.440669 0.215706,0.109916 0.498082,0.109916 1.062839,0.109916 h 3.831905 c 0.564752,0 0.847154,0 1.062849,-0.109916 0.18973,-0.09665 0.344015,-0.250939 0.440669,-0.440669 0.109916,-0.215696 0.109916,-0.498097 0.109916,-1.062849 v -4.840301 c 0,-0.564757 0,-0.847133 -0.109916,-1.062839 -0.09665,-0.189745 -0.250939,-0.344009 -0.440669,-0.440684 -0.202485,-0.103164 -0.46366,-0.109497 -0.962009,-0.109885 m -4.033584,0 v 1.008371 h 4.033584 v -1.008371 m -4.033584,0 v -0.1477 c 0,-0.22828 0.09069,-0.447208 0.252099,-0.608622 0.161414,-0.161414 0.380342,-0.252099 0.608622,-0.252099 h 2.312146 c 0.228251,0 0.447224,0.09069 0.608618,0.252099 0.161393,0.161414 0.252099,0.380342 0.252099,0.608622 v 0.1477 m -2.016792,3.025163 h -1.512594 m 3.025188,2.016792 h -3.025188"
+           stroke="#000000"
+           stroke-width="1.0084"
+           stroke-linecap="round"
+           stroke-linejoin="round"
+           id="path17390"
+           style="fill:none" />
+      </g>
+    </g>
+  </g>
+</svg>

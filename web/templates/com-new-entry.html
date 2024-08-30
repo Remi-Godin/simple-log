@@ -1,0 +1,18 @@
+{{ define "new-entry" }}
+
+<div class="new-entry-container">
+    <div class="new-entry-header">Create New Entry</div>
+    <div class="new-entry-content">
+        <form>
+            <label for="title">Title:</label><br>
+            <input type="text" id="title" name="title" required><br><br>
+
+            <label for="description">Description:</label><br>
+            <textarea id="description" name="description" rows="5" cols="40" required></textarea><br><br>
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</div>
+
+{{ end }}
