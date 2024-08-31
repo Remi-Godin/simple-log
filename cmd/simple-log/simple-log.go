@@ -143,11 +143,34 @@ func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
-
-}
-
-func GetLogbookOwnerFromEntry(w http.ResponseWriter, r *http.Request) {
-
+    logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+        w.WriteHeader(http.StatusBadRequest)
+        return
+	}
+    entryId, err := strconv.Atoi(r.PathValue("entryId"))
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+        w.WriteHeader(http.StatusBadRequest)
+        return
+	}
+    query_params := database.GetEntryFromLogbookParams{
+        Entryid: int32(entryId),
+        Logbookid: int32(logbookId),
+    }
+    result,err := database.New(conn).GetEntryFromLogbook(r.Context(), query_params)
+    if err != nil {
+        if err == sql.ErrNoRows{
+            return
+        }
+		log.Error().Err(err).Msg("Could not complete database query")
+        w.WriteHeader(http.StatusInternalServerError)
+        return
+    }
+    enc := json.NewEncoder(w)
+    enc.Encode(result)
+    return
 }
 
 func InsertNewEntryInLogbook(w http.ResponseWriter, r *http.Request) {

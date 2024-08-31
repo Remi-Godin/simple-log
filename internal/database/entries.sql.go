@@ -132,7 +132,13 @@ CreatedOn,
 CreatedBy
 FROM entries 
 WHERE EntryId=$1
+AND LogbookId=$2
 `
+
+type GetEntryFromLogbookParams struct {
+	Entryid   int32
+	Logbookid int32
+}
 
 type GetEntryFromLogbookRow struct {
 	Entryid     int32
@@ -142,8 +148,8 @@ type GetEntryFromLogbookRow struct {
 	Createdby   int32
 }
 
-func (q *Queries) GetEntryFromLogbook(ctx context.Context, entryid int32) (GetEntryFromLogbookRow, error) {
-	row := q.db.QueryRowContext(ctx, getEntryFromLogbook, entryid)
+func (q *Queries) GetEntryFromLogbook(ctx context.Context, arg GetEntryFromLogbookParams) (GetEntryFromLogbookRow, error) {
+	row := q.db.QueryRowContext(ctx, getEntryFromLogbook, arg.Entryid, arg.Logbookid)
 	var i GetEntryFromLogbookRow
 	err := row.Scan(
 		&i.Entryid,

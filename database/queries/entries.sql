@@ -28,7 +28,8 @@ Description,
 CreatedOn,
 CreatedBy
 FROM entries 
-WHERE EntryId=$1;
+WHERE EntryId=$1
+AND LogbookId=$2;
 
 -- name: GetLogbookAndOwnerFromEntry :one
 SELECT 
