@@ -12,11 +12,16 @@ import (
 )
 
 const deleteEntryFromLogbook = `-- name: DeleteEntryFromLogbook :execresult
-DELETE FROM entries WHERE EntryId=$1
+DELETE FROM entries WHERE EntryId=$1 AND LogbookId=$2
 `
 
-func (q *Queries) DeleteEntryFromLogbook(ctx context.Context, entryid int32) (sql.Result, error) {
-	return q.db.ExecContext(ctx, deleteEntryFromLogbook, entryid)
+type DeleteEntryFromLogbookParams struct {
+	Entryid   int32
+	Logbookid int32
+}
+
+func (q *Queries) DeleteEntryFromLogbook(ctx context.Context, arg DeleteEntryFromLogbookParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, deleteEntryFromLogbook, arg.Entryid, arg.Logbookid)
 }
 
 const getAllEntriesFromLogbook = `-- name: GetAllEntriesFromLogbook :many

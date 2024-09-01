@@ -78,9 +78,14 @@ func main() {
     mux.HandleFunc("GET /", index)
 	mux.HandleFunc("GET /api/v1/logbook/{logbookId}/entries", GetEntriesFromLogbook)
 	mux.HandleFunc("GET /api/v1/logbook/{logbookId}/entries/{entryId}", GetEntryFromLogbook)
+    mux.HandleFunc("POST /api/v1/logbook/{logbookId}/entries", InsertNewEntryInLogbook)
+    mux.HandleFunc("POST /api/v1/logbook", InsertNewLogbook)
+    mux.HandleFunc("DELETE /api/v1/logbook/{logbookId}/entries/{entryId}", DeleteEntryFromLogbook)
+    mux.HandleFunc("DELETE /api/v1/logbook/{logbookId}", DeleteLogbook)
 
 
 	// Start server
+    log.Info().Msg("Starting server at: " + env.db_addr + ":" + env.port)
     err = http.ListenAndServe(env.db_addr+":"+env.port, mux)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Server failure")
@@ -138,7 +143,6 @@ func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
     }
     enc := json.NewEncoder(w)
     enc.Encode(result)
-    return
 
 }
 
@@ -170,25 +174,95 @@ func GetEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
     }
     enc := json.NewEncoder(w)
     enc.Encode(result)
-    return
 }
 
 func InsertNewEntryInLogbook(w http.ResponseWriter, r *http.Request) {
-
+    logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+        w.WriteHeader(http.StatusBadRequest)
+        return
+	}
+    query_params := database.InsertNewEntryInLogbookParams{
+        Title: "",
+        Description: "",
+        Createdby: 1,
+        Logbookid: int32(logbookId),
+        
+    }
+    _,err = database.New(conn).InsertNewEntryInLogbook(r.Context(),query_params)
+    if err != nil {
+		log.Error().Err(err).Msg("Could not complete database query")
+        w.WriteHeader(http.StatusInternalServerError)
+    }
 }
 
 func DeleteEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
+    log.Info().Msg("Starting deletion")
+    logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+        w.WriteHeader(http.StatusBadRequest)
+        return
+	}
+    entryId, err := strconv.Atoi(r.PathValue("entryId"))
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+        w.WriteHeader(http.StatusBadRequest)
+        return
+	}
+    query_params := database.DeleteEntryFromLogbookParams{
+        Entryid: int32(entryId),
+        Logbookid: int32(logbookId),
+    }
+    result,err := database.New(conn).DeleteEntryFromLogbook(r.Context(), query_params)
+    if err != nil {
+		log.Error().Err(err).Msg("Could not complete database query")
+        w.WriteHeader(http.StatusInternalServerError)
+        return
+    }
+    rows_affected,err := result.RowsAffected()
+    if rows_affected > 0 {
+        w.WriteHeader(http.StatusOK)
+        return
+    }
+    w.WriteHeader(http.StatusNoContent)
 
 }
 
 func GetLogbooksOwnedBy(w http.ResponseWriter, r *http.Request) {
-
+    w.WriteHeader(http.StatusNotImplemented)
 }
 
 func InsertNewLogbook(w http.ResponseWriter, r *http.Request) {
-
+    query_params := database.InsertNewLogbookParams{
+        Title: "",
+        Ownedby: 1,
+    }
+    _,err := database.New(conn).InsertNewLogbook(r.Context(), query_params)
+    if err != nil {
+		log.Error().Err(err).Msg("Could not complete database query")
+        w.WriteHeader(http.StatusInternalServerError)
+    }
+    w.WriteHeader(http.StatusCreated)
 }
 
 func DeleteLogbook(w http.ResponseWriter, r *http.Request) {
-
+    logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+        w.WriteHeader(http.StatusBadRequest)
+        return
+	}
+    result,err := database.New(conn).DeleteLogbook(r.Context(),int32(logbookId))
+    if err != nil {
+		log.Error().Err(err).Msg("Could not complete database query")
+        w.WriteHeader(http.StatusInternalServerError)
+    }
+    rows_affected,err := result.RowsAffected()
+    if rows_affected > 0 {
+        w.WriteHeader(http.StatusOK)
+        return
+    }
+    w.WriteHeader(http.StatusNoContent)
 }

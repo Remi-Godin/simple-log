@@ -45,4 +45,4 @@ INSERT INTO entries(Title,Description,CreatedBy,LogbookId) VALUES
 ($1,$2,$3,$4);
 
 -- name: DeleteEntryFromLogbook :execresult
-DELETE FROM entries WHERE EntryId=$1;
+DELETE FROM entries WHERE EntryId=$1 AND LogbookId=$2;
