@@ -1,0 +1,82 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+
+.logbook-entry {
+    margin: 15px;
+    background: #eee;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px 10px 10px 10px;
+    overflow: hidden;
+    box-shadow: 0px 10px 8px 5px rgba(0,0,0,0.2);
+    transition: transform 0.1s ease;
+}
+
+.logbook-entry:hover {
+    transform: scale(1.008);
+}
+
+.entry-header {
+    background: #23395b;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 50px;
+}
+
+.entry-body {
+    background: #e9ecef;
+    display: flex;
+    flex-direction: column;
+    min-height: 100px;
+    flex-grow: 1;
+}
+
+article {
+    margin: 10px;
+}
+
+.entry-footer {
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: row;
+    height: 30px;
+    align-items: center;
+}
+
+.entry-footer p {
+    margin: 0px;
+}
+
+.entry-title {
+    color: #fff;
+    flex: 1;
+    margin-left: 10px;
+    font-size: 1.5em ;
+}
+
+.entry-desc {
+    flex: 1;
+    font-size: 1.3em ;
+}
+
+.entry-timestamp {
+    flex: 1;
+    margin: 0px;
+}
+
+.entry-timestamp {
+    margin-left: 10px;
+}
+
+.entry-createby {
+    flex: 1;
+}
+
+.entry-createdby p {
+    margin-right: 10px;
+}

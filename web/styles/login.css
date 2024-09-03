@@ -1,0 +1,116 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.login-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    width: 300px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-input {
+    margin-bottom: 15px;
+}
+
+.login-input label {
+    margin-bottom: 5px;
+    display: block;
+}
+
+.login-input input[type="text"],
+.login-input input[type="email"],
+.login-input input[type="password"] {
+    padding: 8px;
+    width: 100%;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+button:disabled {
+    padding: 10px;
+    background-color: #fff;
+    color: #007bff;
+    cursor: not-allowed;
+    border-color: #007bff;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+    animation: pulse 2s infinite;
+}
+
+.processing {
+    padding: 10px;
+    background-color: #fff;
+    color: #007bff;
+    cursor: not-allowed;
+    border-color: #007bff;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+    animation: pulse 2s infinite;
+}
+
+button:enabled:hover {
+    background-color: #0056b3;
+}
+
+@keyframes pulse {
+    0% {
+        background-color: #007bff;
+        color: #fff;
+    }
+    50% {
+        background-color: #fff;
+        color: #007bff;
+    }
+    100% {
+        background-color: #007bff;
+        color: #fff;
+    }
+}

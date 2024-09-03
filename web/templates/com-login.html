@@ -1,0 +1,24 @@
+{{ define "com-login" -}}
+{{$username := .Username}}
+{{$password := .Password}}
+
+<form action="/login" method="post">
+    <div class="login-container" id="">
+        <div class="login-row">
+            <h2>Login</h2>
+        </div>
+        <div class="login-input" id="">
+            <label for="username">Username:</label>
+            <input type="email" id="username" name="username" required {{ if $username}} value="{{ $username }}" {{ end }}>
+        </div>
+        <div class="login-input" id="">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="login-input" id="">
+            <button 
+                type="submit">Submit</button>
+        </div>
+    </div>
+</form>
+{{ end }}

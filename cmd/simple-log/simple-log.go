@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+    "html/template"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -27,6 +28,7 @@ type Env struct {
 }
 
 var conn *sql.DB
+var tmpl *template.Template
 
 func loadEnvVars() *Env {
 	env := Env{}
@@ -39,6 +41,14 @@ func loadEnvVars() *Env {
     env.port = os.Getenv("PORT")
 
 	return &env
+}
+
+func renderTemplate(w http.ResponseWriter, tmpl_name string, data any) {
+    log.Info().Msg("Rendering template")
+    err := tmpl.ExecuteTemplate(w, tmpl_name, data)
+    if err != nil {
+        log.Error().Err(err).Msg("Could not execute template")
+    }
 }
 
 func main() {
@@ -70,6 +80,9 @@ func main() {
 	defer conn.Close()
 	log.Info().Msg("Database connection successful!")
 
+    // Parse templates
+    tmpl = template.Must(template.ParseGlob("./web/templates/*.html"))
+
 	// Start new mux
 	mux := http.NewServeMux()
 
@@ -99,6 +112,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 
 func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
+    log.Info().Msg("Getting entries from logbook")
 	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
@@ -109,14 +123,17 @@ func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
     limit_str := request_params.Get("limit")
     offset_str := request_params.Get("offset")
     if limit_str == "" || offset_str == "" {
-        result,err := database.New(conn).GetAllEntriesFromLogbook(r.Context(), int32(logbookId))
+        data,err := database.New(conn).GetAllEntriesFromLogbook(r.Context(), int32(logbookId))
         if err != nil {
 		    log.Error().Err(err).Msg("Could not complete database query")
             w.WriteHeader(http.StatusInternalServerError)
             return
         }
+        /*
         enc := json.NewEncoder(w)
         enc.Encode(result)
+        */
+        renderTemplate(w, "com-logbook-entry", data[0])
         return
     }
     offset,err := strconv.Atoi(offset_str)
@@ -136,14 +153,17 @@ func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
         Offset: int32(offset),
         Limit: int32(limit),
     }
-    result,err := database.New(conn).GetEntriesFromLogbook(r.Context(),query_params)
+    data,err := database.New(conn).GetEntriesFromLogbook(r.Context(),query_params)
     if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
         w.WriteHeader(http.StatusInternalServerError)
         return
     }
+    renderTemplate(w, "com-logbook-entry", data)
+    /*
     enc := json.NewEncoder(w)
     enc.Encode(result)
+    */
 
 }
 
