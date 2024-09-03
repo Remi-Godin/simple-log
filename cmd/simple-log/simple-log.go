@@ -76,6 +76,7 @@ func main() {
 	// Set Handlers
 	//mux.HandleFunc("GET api/v1/logbook/{logbookId}/entries", GetAllEntriesFromLogbook)
     mux.HandleFunc("GET /", index)
+    mux.HandleFunc("GET /api/v1/logbook", GetLogbooks)
 	mux.HandleFunc("GET /api/v1/logbook/{logbookId}/entries", GetEntriesFromLogbook)
 	mux.HandleFunc("GET /api/v1/logbook/{logbookId}/entries/{entryId}", GetEntryFromLogbook)
     mux.HandleFunc("POST /api/v1/logbook/{logbookId}/entries", InsertNewEntryInLogbook)
@@ -177,19 +178,25 @@ func GetEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
 }
 
 func InsertNewEntryInLogbook(w http.ResponseWriter, r *http.Request) {
+    // Get entry data from request
+    // Get owner data from token (not yet implemented)
+    log.Info().Msg("Inserting new entry")
+    decoder := json.NewDecoder(r.Body)
+    var query_params database.InsertNewEntryInLogbookParams
+    err := decoder.Decode(&query_params)
+    if err != nil {
+        log.Error().Err(err).Msg("Could not decode json payload.")
+        w.WriteHeader(http.StatusBadRequest)
+        return
+    }
     logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
         w.WriteHeader(http.StatusBadRequest)
         return
 	}
-    query_params := database.InsertNewEntryInLogbookParams{
-        Title: "",
-        Description: "",
-        Createdby: 1,
-        Logbookid: int32(logbookId),
-        
-    }
+    query_params.Createdby = 1 // FIXME: This needs to reflect who created the entry
+    query_params.Logbookid = int32(logbookId)
     _,err = database.New(conn).InsertNewEntryInLogbook(r.Context(),query_params)
     if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
@@ -235,11 +242,21 @@ func GetLogbooksOwnedBy(w http.ResponseWriter, r *http.Request) {
 }
 
 func InsertNewLogbook(w http.ResponseWriter, r *http.Request) {
-    query_params := database.InsertNewLogbookParams{
-        Title: "",
-        Ownedby: 1,
+    // get title from request
+    // get owned by through token (not yet implemented)
+    log.Info().Msg("Inserting new logbook")
+    decoder := json.NewDecoder(r.Body)
+    var query_params  database.InsertNewLogbookParams
+    err := decoder.Decode(&query_params)
+    if err != nil {
+        log.Error().Err(err).Msg("Could not decode json payload.")
+        w.WriteHeader(http.StatusBadRequest)
+        return
     }
-    _,err := database.New(conn).InsertNewLogbook(r.Context(), query_params)
+    query_params.Ownedby = 1 // FIXME: This needs to reflect whoever created the logbook
+    log.Info().Msg(fmt.Sprintf("title: %s, id: %d", query_params.Title,query_params.Ownedby))
+
+    _,err = database.New(conn).InsertNewLogbook(r.Context(), query_params)
     if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
         w.WriteHeader(http.StatusInternalServerError)
@@ -266,3 +283,15 @@ func DeleteLogbook(w http.ResponseWriter, r *http.Request) {
     }
     w.WriteHeader(http.StatusNoContent)
 }
+
+func GetLogbooks(w http.ResponseWriter, r *http.Request) {
+    result,err := database.New(conn).GetLogbooksOwnedBy(r.Context(), 1)
+    if err != nil {
+		log.Error().Err(err).Msg("Could not complete database query")
+        w.WriteHeader(http.StatusInternalServerError)
+    }
+
+    enc := json.NewEncoder(w)
+    enc.Encode(result)
+}
+
