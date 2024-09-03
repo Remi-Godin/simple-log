@@ -242,9 +242,8 @@ func GetLogbooksOwnedBy(w http.ResponseWriter, r *http.Request) {
 }
 
 func InsertNewLogbook(w http.ResponseWriter, r *http.Request) {
-    // get title from request
-    // get owned by through token (not yet implemented)
     log.Info().Msg("Inserting new logbook")
+    // Decode json data in body
     decoder := json.NewDecoder(r.Body)
     var query_params  database.InsertNewLogbookParams
     err := decoder.Decode(&query_params)
@@ -253,9 +252,11 @@ func InsertNewLogbook(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(http.StatusBadRequest)
         return
     }
-    query_params.Ownedby = 1 // FIXME: This needs to reflect whoever created the logbook
-    log.Info().Msg(fmt.Sprintf("title: %s, id: %d", query_params.Title,query_params.Ownedby))
+    // Set Ownedby to the user that sent the request
+    // FIXME: This needs to reflect whoever created the logbook
+    query_params.Ownedby = 1 
 
+    // Execute the query
     _,err = database.New(conn).InsertNewLogbook(r.Context(), query_params)
     if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
@@ -265,22 +266,26 @@ func InsertNewLogbook(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteLogbook(w http.ResponseWriter, r *http.Request) {
+    // Get logbook id from url
     logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
         w.WriteHeader(http.StatusBadRequest)
         return
 	}
+    // Execute query
     result,err := database.New(conn).DeleteLogbook(r.Context(),int32(logbookId))
     if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
         w.WriteHeader(http.StatusInternalServerError)
     }
+    // if deleted, return 200
     rows_affected,err := result.RowsAffected()
     if rows_affected > 0 {
         w.WriteHeader(http.StatusOK)
         return
     }
+    // if nothing got deleted, then no content
     w.WriteHeader(http.StatusNoContent)
 }
 
