@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"net/http"
 	"os"
 	"strconv"
-    "html/template"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -38,17 +38,17 @@ func loadEnvVars() *Env {
 	env.postgres_db = os.Getenv("POSTGRES_DB")
 	env.db_addr = os.Getenv("DB_ADDR")
 	env.db_port = os.Getenv("DB_PORT")
-    env.port = os.Getenv("PORT")
+	env.port = os.Getenv("PORT")
 
 	return &env
 }
 
 func renderTemplate(w http.ResponseWriter, tmpl_name string, data any) {
-    log.Info().Msg("Rendering template")
-    err := tmpl.ExecuteTemplate(w, tmpl_name, data)
-    if err != nil {
-        log.Error().Err(err).Msg("Could not execute template")
-    }
+	log.Info().Msg("Rendering template")
+	err := tmpl.ExecuteTemplate(w, tmpl_name, data)
+	if err != nil {
+		log.Error().Err(err).Msg("Could not execute template")
+	}
 }
 
 func main() {
@@ -80,243 +80,232 @@ func main() {
 	defer conn.Close()
 	log.Info().Msg("Database connection successful!")
 
-    // Parse templates
-    tmpl = template.Must(template.ParseGlob("./web/templates/*.html"))
+	// Parse templates
+	tmpl = template.Must(template.ParseGlob("./web/templates/*.html"))
 
 	// Start new mux
 	mux := http.NewServeMux()
 
 	// Set Handlers
 	//mux.HandleFunc("GET api/v1/logbook/{logbookId}/entries", GetAllEntriesFromLogbook)
-    mux.HandleFunc("GET /", index)
-    mux.HandleFunc("GET /api/v1/logbook", GetLogbooks)
+    mux.Handle("/styles/", http.StripPrefix("/styles/", http.FileServer(http.Dir("web/styles"))))
+	mux.HandleFunc("/", index)
+	mux.HandleFunc("GET /api/v1/logbook", GetLogbooks)
 	mux.HandleFunc("GET /api/v1/logbook/{logbookId}/entries", GetEntriesFromLogbook)
 	mux.HandleFunc("GET /api/v1/logbook/{logbookId}/entries/{entryId}", GetEntryFromLogbook)
-    mux.HandleFunc("POST /api/v1/logbook/{logbookId}/entries", InsertNewEntryInLogbook)
-    mux.HandleFunc("POST /api/v1/logbook", InsertNewLogbook)
-    mux.HandleFunc("DELETE /api/v1/logbook/{logbookId}/entries/{entryId}", DeleteEntryFromLogbook)
-    mux.HandleFunc("DELETE /api/v1/logbook/{logbookId}", DeleteLogbook)
-
+	mux.HandleFunc("POST /api/v1/logbook/{logbookId}/entries", InsertNewEntryInLogbook)
+	mux.HandleFunc("POST /api/v1/logbook", InsertNewLogbook)
+	mux.HandleFunc("DELETE /api/v1/logbook/{logbookId}/entries/{entryId}", DeleteEntryFromLogbook)
+	mux.HandleFunc("DELETE /api/v1/logbook/{logbookId}", DeleteLogbook)
 
 	// Start server
-    log.Info().Msg("Starting server at: " + env.db_addr + ":" + env.port)
-    err = http.ListenAndServe(env.db_addr+":"+env.port, mux)
+	log.Info().Msg("Starting server at: " + env.db_addr + ":" + env.port)
+	err = http.ListenAndServe(env.db_addr+":"+env.port, mux)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Server failure")
 	}
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-    log.Info().Msg("Yup, this is the index")
+	log.Info().Msg("Yup, this is the index")
 }
 
-
 func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
-    log.Info().Msg("Getting entries from logbook")
+	log.Info().Msg("Getting entries from logbook")
 	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
-        w.WriteHeader(http.StatusBadRequest)
-        return
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
-    request_params := r.URL.Query()
-    limit_str := request_params.Get("limit")
-    offset_str := request_params.Get("offset")
-    if limit_str == "" || offset_str == "" {
-        data,err := database.New(conn).GetAllEntriesFromLogbook(r.Context(), int32(logbookId))
-        if err != nil {
-		    log.Error().Err(err).Msg("Could not complete database query")
-            w.WriteHeader(http.StatusInternalServerError)
-            return
-        }
-        /*
-        enc := json.NewEncoder(w)
-        enc.Encode(result)
-        */
-        renderTemplate(w, "com-logbook-entry", data[0])
-        return
-    }
-    offset,err := strconv.Atoi(offset_str)
+	request_params := r.URL.Query()
+	limit_str := request_params.Get("limit")
+	offset_str := request_params.Get("offset")
+	if limit_str == "" || offset_str == "" {
+		data, err := database.New(conn).GetAllEntriesFromLogbook(r.Context(), int32(logbookId))
+		if err != nil {
+			log.Error().Err(err).Msg("Could not complete database query")
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		renderTemplate(w, "logbook", data)
+		return
+	}
+	offset, err := strconv.Atoi(offset_str)
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
-        w.WriteHeader(http.StatusBadRequest)
-        return
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
-    limit,err := strconv.Atoi(limit_str)
+	limit, err := strconv.Atoi(limit_str)
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
-        w.WriteHeader(http.StatusBadRequest)
-        return
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
-    query_params := database.GetEntriesFromLogbookParams{
-        Logbookid: int32(logbookId),
-        Offset: int32(offset),
-        Limit: int32(limit),
-    }
-    data,err := database.New(conn).GetEntriesFromLogbook(r.Context(),query_params)
-    if err != nil {
+	query_params := database.GetEntriesFromLogbookParams{
+		Logbookid: int32(logbookId),
+		Offset:    int32(offset),
+		Limit:     int32(limit),
+	}
+	data, err := database.New(conn).GetEntriesFromLogbook(r.Context(), query_params)
+	if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
-        w.WriteHeader(http.StatusInternalServerError)
-        return
-    }
-    renderTemplate(w, "com-logbook-entry", data)
-    /*
-    enc := json.NewEncoder(w)
-    enc.Encode(result)
-    */
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	renderTemplate(w, "logbook", data)
 
 }
 
 func GetEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
-    logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
+	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
-        w.WriteHeader(http.StatusBadRequest)
-        return
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
-    entryId, err := strconv.Atoi(r.PathValue("entryId"))
+	entryId, err := strconv.Atoi(r.PathValue("entryId"))
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
-        w.WriteHeader(http.StatusBadRequest)
-        return
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
-    query_params := database.GetEntryFromLogbookParams{
-        Entryid: int32(entryId),
-        Logbookid: int32(logbookId),
-    }
-    result,err := database.New(conn).GetEntryFromLogbook(r.Context(), query_params)
-    if err != nil {
-        if err == sql.ErrNoRows{
-            return
-        }
+	query_params := database.GetEntryFromLogbookParams{
+		Entryid:   int32(entryId),
+		Logbookid: int32(logbookId),
+	}
+	data, err := database.New(conn).GetEntryFromLogbook(r.Context(), query_params)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return
+		}
 		log.Error().Err(err).Msg("Could not complete database query")
-        w.WriteHeader(http.StatusInternalServerError)
-        return
-    }
-    enc := json.NewEncoder(w)
-    enc.Encode(result)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+    renderTemplate(w, "com-logbook-entry", data)
 }
 
 func InsertNewEntryInLogbook(w http.ResponseWriter, r *http.Request) {
-    // Get entry data from request
-    // Get owner data from token (not yet implemented)
-    log.Info().Msg("Inserting new entry")
-    decoder := json.NewDecoder(r.Body)
-    var query_params database.InsertNewEntryInLogbookParams
-    err := decoder.Decode(&query_params)
-    if err != nil {
-        log.Error().Err(err).Msg("Could not decode json payload.")
-        w.WriteHeader(http.StatusBadRequest)
-        return
-    }
-    logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
+	// Get entry data from request
+	// Get owner data from token (not yet implemented)
+	log.Info().Msg("Inserting new entry")
+	decoder := json.NewDecoder(r.Body)
+	var query_params database.InsertNewEntryInLogbookParams
+	err := decoder.Decode(&query_params)
+	if err != nil {
+		log.Error().Err(err).Msg("Could not decode json payload.")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
-        w.WriteHeader(http.StatusBadRequest)
-        return
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
-    query_params.Createdby = 1 // FIXME: This needs to reflect who created the entry
-    query_params.Logbookid = int32(logbookId)
-    _,err = database.New(conn).InsertNewEntryInLogbook(r.Context(),query_params)
-    if err != nil {
+	query_params.Createdby = 1 // FIXME: This needs to reflect who created the entry
+	query_params.Logbookid = int32(logbookId)
+	_, err = database.New(conn).InsertNewEntryInLogbook(r.Context(), query_params)
+	if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
-        w.WriteHeader(http.StatusInternalServerError)
-    }
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 }
 
 func DeleteEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
-    log.Info().Msg("Starting deletion")
-    logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
+	log.Info().Msg("Starting deletion")
+	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
-        w.WriteHeader(http.StatusBadRequest)
-        return
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
-    entryId, err := strconv.Atoi(r.PathValue("entryId"))
+	entryId, err := strconv.Atoi(r.PathValue("entryId"))
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
-        w.WriteHeader(http.StatusBadRequest)
-        return
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
-    query_params := database.DeleteEntryFromLogbookParams{
-        Entryid: int32(entryId),
-        Logbookid: int32(logbookId),
-    }
-    result,err := database.New(conn).DeleteEntryFromLogbook(r.Context(), query_params)
-    if err != nil {
+	query_params := database.DeleteEntryFromLogbookParams{
+		Entryid:   int32(entryId),
+		Logbookid: int32(logbookId),
+	}
+	result, err := database.New(conn).DeleteEntryFromLogbook(r.Context(), query_params)
+	if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
-        w.WriteHeader(http.StatusInternalServerError)
-        return
-    }
-    rows_affected,err := result.RowsAffected()
-    if rows_affected > 0 {
-        w.WriteHeader(http.StatusOK)
-        return
-    }
-    w.WriteHeader(http.StatusNoContent)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	rows_affected, err := result.RowsAffected()
+	if rows_affected > 0 {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 
 }
 
 func GetLogbooksOwnedBy(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusNotImplemented)
+	w.WriteHeader(http.StatusNotImplemented)
 }
 
 func InsertNewLogbook(w http.ResponseWriter, r *http.Request) {
-    log.Info().Msg("Inserting new logbook")
-    // Decode json data in body
-    decoder := json.NewDecoder(r.Body)
-    var query_params  database.InsertNewLogbookParams
-    err := decoder.Decode(&query_params)
-    if err != nil {
-        log.Error().Err(err).Msg("Could not decode json payload.")
-        w.WriteHeader(http.StatusBadRequest)
-        return
-    }
-    // Set Ownedby to the user that sent the request
-    // FIXME: This needs to reflect whoever created the logbook
-    query_params.Ownedby = 1 
+	log.Info().Msg("Inserting new logbook")
+	// Decode json data in body
+	decoder := json.NewDecoder(r.Body)
+	var query_params database.InsertNewLogbookParams
+	err := decoder.Decode(&query_params)
+	if err != nil {
+		log.Error().Err(err).Msg("Could not decode json payload.")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	// Set Ownedby to the user that sent the request
+	// FIXME: This needs to reflect whoever created the logbook
+	query_params.Ownedby = 1
 
-    // Execute the query
-    _,err = database.New(conn).InsertNewLogbook(r.Context(), query_params)
-    if err != nil {
+	// Execute the query
+	_, err = database.New(conn).InsertNewLogbook(r.Context(), query_params)
+	if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
-        w.WriteHeader(http.StatusInternalServerError)
-    }
-    w.WriteHeader(http.StatusCreated)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+	w.WriteHeader(http.StatusCreated)
 }
 
 func DeleteLogbook(w http.ResponseWriter, r *http.Request) {
-    // Get logbook id from url
-    logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
+	// Get logbook id from url
+	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
-        w.WriteHeader(http.StatusBadRequest)
-        return
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
-    // Execute query
-    result,err := database.New(conn).DeleteLogbook(r.Context(),int32(logbookId))
-    if err != nil {
+	// Execute query
+	result, err := database.New(conn).DeleteLogbook(r.Context(), int32(logbookId))
+	if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
-        w.WriteHeader(http.StatusInternalServerError)
-    }
-    // if deleted, return 200
-    rows_affected,err := result.RowsAffected()
-    if rows_affected > 0 {
-        w.WriteHeader(http.StatusOK)
-        return
-    }
-    // if nothing got deleted, then no content
-    w.WriteHeader(http.StatusNoContent)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+	// if deleted, return 200
+	rows_affected, err := result.RowsAffected()
+	if rows_affected > 0 {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	// if nothing got deleted, then no content
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func GetLogbooks(w http.ResponseWriter, r *http.Request) {
-    result,err := database.New(conn).GetLogbooksOwnedBy(r.Context(), 1)
-    if err != nil {
+	result, err := database.New(conn).GetLogbooksOwnedBy(r.Context(), 1)
+	if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
-        w.WriteHeader(http.StatusInternalServerError)
-    }
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 
-    enc := json.NewEncoder(w)
-    enc.Encode(result)
+	enc := json.NewEncoder(w)
+	enc.Encode(result)
 }
-
