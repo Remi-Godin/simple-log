@@ -90,13 +90,14 @@ func main() {
 	//mux.HandleFunc("GET api/v1/logbook/{logbookId}/entries", GetAllEntriesFromLogbook)
     mux.Handle("/styles/", http.StripPrefix("/styles/", http.FileServer(http.Dir("web/styles"))))
 	mux.HandleFunc("/", index)
-	mux.HandleFunc("GET /api/v1/logbook", GetLogbooks)
-	mux.HandleFunc("GET /api/v1/logbook/{logbookId}/entries", GetEntriesFromLogbook)
-	mux.HandleFunc("GET /api/v1/logbook/{logbookId}/entries/{entryId}", GetEntryFromLogbook)
-	mux.HandleFunc("POST /api/v1/logbook/{logbookId}/entries", InsertNewEntryInLogbook)
-	mux.HandleFunc("POST /api/v1/logbook", InsertNewLogbook)
-	mux.HandleFunc("DELETE /api/v1/logbook/{logbookId}/entries/{entryId}", DeleteEntryFromLogbook)
-	mux.HandleFunc("DELETE /api/v1/logbook/{logbookId}", DeleteLogbook)
+	mux.HandleFunc("GET /logbook", GetLogbooks)
+	mux.HandleFunc("GET /logbook/{logbookId}", GetLogbook)
+	mux.HandleFunc("GET /logbook/{logbookId}/entries", GetEntriesFromLogbook)
+	mux.HandleFunc("GET /logbook/{logbookId}/entries/{entryId}", GetEntryFromLogbook)
+	mux.HandleFunc("POST /logbook/{logbookId}/entries", InsertNewEntryInLogbook)
+	mux.HandleFunc("POST /logbook", InsertNewLogbook)
+	mux.HandleFunc("DELETE /logbook/{logbookId}/entries/{entryId}", DeleteEntryFromLogbook)
+	mux.HandleFunc("DELETE /logbook/{logbookId}", DeleteLogbook)
 
 	// Start server
 	log.Info().Msg("Starting server at: " + env.db_addr + ":" + env.port)
@@ -128,7 +129,7 @@ func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		renderTemplate(w, "logbook", data)
+		renderTemplate(w, "com-logbook-entry", data)
 		return
 	}
 	offset, err := strconv.Atoi(offset_str)
@@ -154,7 +155,7 @@ func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	renderTemplate(w, "logbook", data)
+	renderTemplate(w, "com-logbook-entry", data)
 
 }
 
@@ -309,3 +310,16 @@ func GetLogbooks(w http.ResponseWriter, r *http.Request) {
 	enc := json.NewEncoder(w)
 	enc.Encode(result)
 }
+
+func GetLogbook(w http.ResponseWriter, r *http.Request) {
+	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+    data := logbookId
+    log.Info().Msg(string(data))
+    renderTemplate(w, "logbook", nil)
+}
+

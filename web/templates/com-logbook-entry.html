@@ -1,33 +1,33 @@
 {{ block "com-logbook-entry" . }}
-{{$entryid := .Entryid}}
-{{$entrytitle := .Title}}
-{{$description := .Description}}
-{{$createdon := .Createdon}}
-{{$createdby := .Createdby}}
-
-    <body>
-        <div class="logbook-entry">
-            <div class="entry-header">
-                <div class="entry-title" id="">
-                    <p>{{ $entrytitle }}</p>
+    {{ range . }}
+        {{$entryid := .Entryid}}
+        {{$entrytitle := .Title}}
+        {{$description := .Description}}
+        {{$createdon := .Createdon}}
+        {{$createdby := .Createdby}}
+            <body>
+                <div class="logbook-entry">
+                    <div class="entry-header">
+                        <div class="entry-title" id="">
+                            <p>{{ $entrytitle }}</p>
+                        </div>
+                    </div>
+                    <div class="entry-body">
+                        <div class="entry-desc" id="">
+                            <article>
+                                {{ $description }}
+                            </article>
+                        </div>
+                    </div>
+                    <div class="entry-footer">
+                        <div class="entry-timestamp" id="">
+                            <p>{{ $createdon }}</p>
+                        </div>
+                        <div class="entry-createdby" id="">
+                            <p>{{ $createdby }}</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="entry-body">
-                <div class="entry-desc" id="">
-                    <article>
-                    {{ $description }}
-                    </article>
-                </div>
-            </div>
-            <div class="entry-footer">
-                <div class="entry-timestamp" id="">
-                    <p>{{ $createdon }}</p>
-                </div>
-                <div class="entry-createdby" id="">
-                    <p>{{ $createdby }}</p>
-                </div>
-            </div>
-        </div>
-    </body>
-
+            </body>
+    {{ end }}
 {{ end }}
