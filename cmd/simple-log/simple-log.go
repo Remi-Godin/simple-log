@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"net/http"
 	"os"
@@ -88,7 +87,7 @@ func main() {
 
 	// Set Handlers
 	//mux.HandleFunc("GET api/v1/logbook/{logbookId}/entries", GetAllEntriesFromLogbook)
-    mux.Handle("/styles/", http.StripPrefix("/styles/", http.FileServer(http.Dir("web/styles"))))
+	mux.Handle("/styles/", http.StripPrefix("/styles/", http.FileServer(http.Dir("web/styles"))))
 	mux.HandleFunc("/", index)
 	mux.HandleFunc("GET /logbook", GetLogbooks)
 	mux.HandleFunc("GET /logbook/{logbookId}", GetLogbook)
@@ -185,7 +184,7 @@ func GetEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-    renderTemplate(w, "com-logbook-entry", data)
+	renderTemplate(w, "com-logbook-entry", data)
 }
 
 func InsertNewEntryInLogbook(w http.ResponseWriter, r *http.Request) {
@@ -318,8 +317,7 @@ func GetLogbook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-    data := logbookId
-    log.Info().Msg(string(data))
-    renderTemplate(w, "logbook", nil)
+	data := logbookId
+	log.Info().Msg(string(data))
+	renderTemplate(w, "logbook", nil)
 }
-
