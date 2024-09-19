@@ -99,6 +99,7 @@ func main() {
 	mux.HandleFunc("POST /logbook", InsertNewLogbook)
 	mux.HandleFunc("DELETE /logbook/{logbookId}/entries/{entryId}", DeleteEntryFromLogbook)
 	mux.HandleFunc("DELETE /logbook/{logbookId}", DeleteLogbook)
+	mux.HandleFunc("GET /modal", modal)
 
 	// Start server
 	log.Info().Msg("Starting server at: " + env.db_addr + ":" + env.port)
@@ -106,6 +107,10 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Server failure")
 	}
+}
+
+func modal(w http.ResponseWriter, r *http.Request) {
+	renderTemplate(w, "modal", nil)
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
