@@ -1,14 +1,14 @@
 {{ define "new-entry" }}
 
 <div class="new-entry-container">
-    <div class="new-entry-header">Create New Entry</div>
-    <div class="new-entry-content">
-        <form>
-            <label for="title">Title:</label><br>
+    <div class="bg-1 white-txt small-pad height-2 center text-title">Create New Entry</div>
+    <div class="bg-2 big-pad">
+        <form hx-post="/logbook/1/entries">
+            <label for="title" class="text-subtitle">Title:</label><br>
             <input type="text" id="title" name="title" required><br><br>
 
-            <label for="description">Description:</label><br>
-            <textarea id="description" name="description" rows="5" cols="40" required></textarea><br><br>
+            <label for="description" class="text-subtitle">Description:</label><br>
+            <textarea id="description" name="description" rows="5" cols="50" required></textarea><br><br>
 
             <input type="submit" value="Submit">
         </form>

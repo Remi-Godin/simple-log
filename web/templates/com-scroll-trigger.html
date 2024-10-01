@@ -1,0 +1,10 @@
+{{ block "com-scroll-trigger" . }}
+{{$offset := .Offset}}
+{{$limit := .Limit}}
+
+<div class="scroll-trigger" hx-trigger="intersect, click throttle:1s delay:5s" hx-target="#entry-container"
+    hx-swap="beforeend" hx-get="/logbook/1/entries?limit={{$limit}}&offset={{$offset}}">
+    Load more...
+</div>
+
+{{ end }}

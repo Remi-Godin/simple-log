@@ -1,31 +1,35 @@
 {{ block "com-logbook-entry" . }}
-    {{ range . }}
-        {{$entryid := .Entryid}}
-        {{$entrytitle := .Title}}
-        {{$description := .Description}}
-        {{$createdon := .Createdon}}
-        {{$createdby := .Createdby}}
-                <div class="logbook-entry round-corners">
-                    <div class="entry-header">
-                        <div class="bg-1 white-txt" id="">
-                            <p>{{ $entrytitle }}</p>
-                        </div>
-                    </div>
-                    <div class="bg-2">
-                        <div class="entry-desc" id="">
-                            <article>
-                                {{ $description }}
-                            </article>
-                        </div>
-                    </div>
-                    <div class="entry-footer">
-                        <div class="entry-timestamp" id="">
-                            <p>{{ $createdon }}</p>
-                        </div>
-                        <div class="entry-createdby" id="">
-                            <p>{{ $createdby }}</p>
-                        </div>
-                    </div>
-                </div>
-    {{ end }}
+
+{{$offset := .Offset}}
+{{$limit := .Limit}}
+{{$loadmore := .LoadMore}}
+{{ range .EntryData }}
+
+{{$entryid := .Entryid}}
+{{$entrytitle := .Title}}
+{{$description := .Description}}
+{{$createdon := .Createdon}}
+{{$createdby := .Createdby}}
+
+<div class="logbook-entry round-corners popup-anim">
+    <div class="bg-1 white-txt text-subtitle small-pad" id="">
+        <p>{{ $entrytitle }}</p>
+    </div>
+    <div class="bg-2 flex-col flex-grow-1">
+        <article>
+            {{ $description }}
+        </article>
+    </div>
+    <div class="bg-3 flex-row flex-grow-1 space-between side-pad-1">
+        <p>{{ $createdon }}</p>
+        <p>{{ $createdby }}</p>
+    </div>
+</div>
+{{ end }}
+{{ if $loadmore }}
+<div class="scroll-trigger" hx-trigger="intersect, click" hx-target="#entry-container" hx-swap="beforeend"
+    hx-get="/logbook/1/entries?limit={{$limit}}&offset={{$offset}}" _="on intersect remove me">
+    Load more...
+</div>
+{{ end }}
 {{ end }}

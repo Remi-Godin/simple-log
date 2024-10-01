@@ -1,3 +1,17 @@
+-- name: GetLatestEntry :one
+SELECT
+EntryId,
+Title,
+Description,
+CreatedOn,
+CreatedBy
+FROM entries 
+WHERE LogbookId=$1
+ORDER BY CreatedOn DESC
+LIMIT 1 
+OFFSET 0;
+
+
 -- name: GetAllEntriesFromLogbook :many
 SELECT
 EntryId,
@@ -17,6 +31,7 @@ CreatedOn,
 CreatedBy
 FROM entries 
 WHERE LogbookId=$1
+ORDER BY CreatedOn DESC
 LIMIT $2
 OFFSET $3;
 

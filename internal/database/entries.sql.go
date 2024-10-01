@@ -81,6 +81,7 @@ CreatedOn,
 CreatedBy
 FROM entries 
 WHERE LogbookId=$1
+ORDER BY CreatedOn DESC
 LIMIT $2
 OFFSET $3
 `

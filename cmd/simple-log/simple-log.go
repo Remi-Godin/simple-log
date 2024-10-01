@@ -99,7 +99,7 @@ func main() {
 	mux.HandleFunc("POST /logbook", InsertNewLogbook)
 	mux.HandleFunc("DELETE /logbook/{logbookId}/entries/{entryId}", DeleteEntryFromLogbook)
 	mux.HandleFunc("DELETE /logbook/{logbookId}", DeleteLogbook)
-	mux.HandleFunc("GET /modal", modal)
+	mux.HandleFunc("GET /modal", Modal)
 
 	// Start server
 	log.Info().Msg("Starting server at: " + env.db_addr + ":" + env.port)
@@ -109,12 +109,19 @@ func main() {
 	}
 }
 
-func modal(w http.ResponseWriter, r *http.Request) {
+func Modal(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "modal", nil)
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
 	log.Info().Msg("Yup, this is the index")
+}
+
+type PageLoadData struct {
+	EntryData any
+	Limit     int
+	Offset    int
+	LoadMore  bool
 }
 
 func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
@@ -128,6 +135,7 @@ func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
 	request_params := r.URL.Query()
 	limit_str := request_params.Get("limit")
 	offset_str := request_params.Get("offset")
+	latest_only := request_params.Get("latest_only")
 	if limit_str == "" || offset_str == "" {
 		data, err := database.New(conn).GetAllEntriesFromLogbook(r.Context(), int32(logbookId))
 		if err != nil {
@@ -161,7 +169,15 @@ func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	renderTemplate(w, "com-logbook-entry", data)
+	var page_data PageLoadData
+	if latest_only == "true" {
+		page_data = PageLoadData{data, 1, 0, false}
+	} else if len(data) == limit {
+		page_data = PageLoadData{data, limit, limit + offset, true}
+	} else {
+		page_data = PageLoadData{data, limit, limit + offset, false}
+	}
+	renderTemplate(w, "com-logbook-entry", page_data)
 
 }
 
@@ -197,15 +213,23 @@ func GetEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
 func InsertNewEntryInLogbook(w http.ResponseWriter, r *http.Request) {
 	// Get entry data from request
 	// Get owner data from token (not yet implemented)
-	log.Info().Msg("Inserting new entry")
-	decoder := json.NewDecoder(r.Body)
-	var query_params database.InsertNewEntryInLogbookParams
-	err := decoder.Decode(&query_params)
+	err := r.ParseForm()
 	if err != nil {
-		log.Error().Err(err).Msg("Could not decode json payload.")
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	title := r.FormValue("title")
+	description := r.FormValue("description")
+	if title == "" || description == "" {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	var query_params database.InsertNewEntryInLogbookParams
+	query_params.Title = title
+	query_params.Description = description
+	log.Info().Msg(title + ": " + description)
 	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")

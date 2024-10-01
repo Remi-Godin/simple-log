@@ -1,17 +1,11 @@
 {{ define "com-logbook-header" }}
-    <div class="logbook-header">
-        <div class="bg-1 height-4 v-center small-pad">
-            <img src="/assets/logo_white.svg" alt="SimpleLog"/>
-        </div>
-        <div class="bg-1 height-3 v-center small-pad">
-            <img 
-            src="/assets/add_button.svg" 
-            alt="SimpleLog"
-            class="btn primary" 
-            hx-get="/modal" 
-            hx-target="body" 
-            hx-swap="beforeend"
-            />
-        </div>
+<div class="logbook-header">
+    <div class="bg-1 height-4 v-center small-pad">
+        <img src="/assets/logo_white.svg" alt="SimpleLog" />
     </div>
+    <div class="bg-1 height-3 v-center small-pad">
+        <img src="/assets/add_button.svg" alt="SimpleLog" class="popup-anim" hx-get="/modal" hx-target="body"
+            hx-swap="beforeend" />
+    </div>
+</div>
 {{ end }}
