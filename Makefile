@@ -10,4 +10,5 @@ migrateup:
 migratedown:
 	. ./.env; . ./scripts/migratedown.sh
 
+
 .PHONY: migrateup migratedown dockerup dockerdown
