@@ -29,8 +29,8 @@
 </div>
 {{ end }}
 {{ if $loadmore }}
-<div class="scroll-trigger" hx-trigger="intersect, click" hx-target="#entry-container" hx-swap="beforeend"
-    hx-get="/logbook/1/entries?limit={{$limit}}&offset={{$offset}}" _="on intersect remove me">
+<div class="scroll-trigger" hx-trigger="intersect delay:0.1s, click" hx-target="#entry-container" hx-swap="beforeend"
+    hx-get="/logbook/1/entries?limit={{$limit}}&offset={{$offset}}" _="on intersect wait 0.1s remove me">
     Load more...
 </div>
 {{ end }}
