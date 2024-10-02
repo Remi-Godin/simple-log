@@ -45,6 +45,10 @@ main {
     overflow: hidden;
 }
 
+textarea {
+    resize: vertical;
+}
+
 
 /*
  * Backgrounds
@@ -144,6 +148,10 @@ main {
     justify-content: space-between;
 }
 
+.space-around {
+    justify-content: space-around;
+}
+
 .side-pad-1 {
     padding-left: 0.2em;
     padding-right: 0.2em;
@@ -183,16 +191,12 @@ main {
     transform: scale(1.008);
 }
 
-
-
-
-
 .new-entry-container {
     display: flex;
     flex-direction: column;
     border-radius: 10px;
     overflow: hidden;
-    margin: 1em;
+    margin: 0em;
 }
 
 .center {
@@ -200,6 +204,17 @@ main {
     justify-content: center;
     text-align: center;
 }
+
+.full-width {
+    width: 100%;
+    flex: 1;
+}
+
+.button-width {
+    width: 100%;
+    flex: 1;
+}
+
 
 .new-entry-content {
     padding: 0.5em;
@@ -258,15 +273,14 @@ main {
     margin-top: 10vh;
 
     /* Sizing for visible dialog */
-    width: 80%;
+    width: 100%;
     max-width: 600px;
 
     /* Display properties for visible dialog*/
-    border: solid 1px #999;
     border-radius: 8px;
     box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.3);
-    background-color: white;
-    padding: 20px;
+    background-color: rgba(0, 0, 0, 0);
+    padding: 0px;
 
     /* Animate when opening */
     animation-name: zoomIn;

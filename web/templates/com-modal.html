@@ -19,34 +19,39 @@
             <div class="bg-2 big-pad">
                 <form hx-post="/logbook/1/entries" id="new-entry-form">
                     <label for="title" class="text-subtitle">Title:</label><br>
-                    <input type="text" id="title" name="title" {{ if $title }} value="{{$title}}" {{ end }}
-                        required><br><br>
+                    <input class="full-width" type="text" id="title" name="title" {{ if $title }} value="{{$title}}" {{
+                        end }} required><br><br>
 
                     <label for="description" class="text-subtitle">Description:</label><br>
-                    <textarea id="description" name="description" rows="5" cols="50" required>{{ if
-                        $description}}{{$description}}{{ end }}
-                    </textarea><br><br>
+                    {{ if $description }}
+                    <textarea id="description" class="full-width" name="description" rows="5" cols="50"
+                        required>{{$description}}</textarea><br><br>{{else}}
+                    <textarea id="description" class="full-width" name="description" rows="5" cols="50"
+                        required></textarea><br><br>{{end}}
 
                 </form>
-                <div class="flex-row space-between">
+                <div class="flex-row space-around">
+
                     {{ if $entryid }}
-                    <input type="submit" value="Update" hx-patch="/logbook/{{$logbookid}}/entries/{{$entryid}}"
-                        hx-include="#new-entry-form"
-                        hx-on="htmx:afterRequest: hx-get('/logbook/1/entries?limit=10&offset=0', {target: '#entry-container})"
-                        _="on click wait 0.2 trigger closeModal">
+                    <input type="submit" class="button-width height-2" value="Update"
+                        hx-patch="/logbook/{{$logbookid}}/entries/{{$entryid}}" hx-include="#new-entry-form"
+                        hx-on="htmx:afterRequest: hx-get('/logbook/1/entries?limit=10&offset=0', {target: '#entry-container})">
 
-                    <button class="btn danger" _="on click trigger closeModal"
+                    <button class="button-width height-2" _="on click trigger closeModal"
                         hx-get="/logbook/1/entries?limit=10&offset=0" hx-target="#entry-container"
                         hx-swap="innerhtml">Close</button>
 
-                    <img src="/assets/delete_button.svg" style="width:2em" alt="Delete" class="popup-anim"
+                    <img src="/assets/delete_button.svg" alt="Delete" class="popup-anim height-2"
                         hx-delete="/logbook/{{$logbookid}}/entries/{{$entryid}}" />
-                    {{ else }}
-                    <input type="submit" value="Submit" hx-post="/logbook/1/entries" hx-include="#new-entry-form">
 
-                    <button class="btn danger" _="on click trigger closeModal"
+                    {{ else }}
+                    <input type="submit" class="button-width height-2" value="Submit" hx-post="/logbook/1/entries"
+                        hx-include="#new-entry-form">
+
+                    <button class="button-width height-2" _="on click trigger closeModal"
                         hx-get="/logbook/1/entries?limit=10&offset=0" hx-target="#entry-container"
                         hx-swap="innerhtml">Close</button>
+
                     {{ end }}
 
                     <br>

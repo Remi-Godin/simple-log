@@ -1,12 +1,10 @@
 # SimpleLog
-A simple yet powerful digital logbook.
+A simple digital logbook.
 
 # Tech and tools
 - Go
 - sqlc
 - Postgres
 - Docker
-
-# Site Features
-- Server side rendering
-- Scroll to load
+- htmx
+- hyperscript
