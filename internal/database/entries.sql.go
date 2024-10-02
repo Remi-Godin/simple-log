@@ -8,7 +8,6 @@ package database
 import (
 	"context"
 	"database/sql"
-	"time"
 )
 
 const deleteEntryFromLogbook = `-- name: DeleteEntryFromLogbook :execresult
@@ -30,34 +29,28 @@ EntryId,
 Title,
 Description,
 CreatedOn,
-CreatedBy
+CreatedBy,
+LogbookId
 FROM entries 
 WHERE LogbookId=$1
 `
 
-type GetAllEntriesFromLogbookRow struct {
-	Entryid     int32
-	Title       string
-	Description string
-	Createdon   time.Time
-	Createdby   int32
-}
-
-func (q *Queries) GetAllEntriesFromLogbook(ctx context.Context, logbookid int32) ([]GetAllEntriesFromLogbookRow, error) {
+func (q *Queries) GetAllEntriesFromLogbook(ctx context.Context, logbookid int32) ([]Entry, error) {
 	rows, err := q.db.QueryContext(ctx, getAllEntriesFromLogbook, logbookid)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetAllEntriesFromLogbookRow
+	var items []Entry
 	for rows.Next() {
-		var i GetAllEntriesFromLogbookRow
+		var i Entry
 		if err := rows.Scan(
 			&i.Entryid,
 			&i.Title,
 			&i.Description,
 			&i.Createdon,
 			&i.Createdby,
+			&i.Logbookid,
 		); err != nil {
 			return nil, err
 		}
@@ -78,7 +71,8 @@ EntryId,
 Title,
 Description,
 CreatedOn,
-CreatedBy
+CreatedBy,
+LogbookId
 FROM entries 
 WHERE LogbookId=$1
 ORDER BY CreatedOn DESC
@@ -92,29 +86,22 @@ type GetEntriesFromLogbookParams struct {
 	Offset    int32
 }
 
-type GetEntriesFromLogbookRow struct {
-	Entryid     int32
-	Title       string
-	Description string
-	Createdon   time.Time
-	Createdby   int32
-}
-
-func (q *Queries) GetEntriesFromLogbook(ctx context.Context, arg GetEntriesFromLogbookParams) ([]GetEntriesFromLogbookRow, error) {
+func (q *Queries) GetEntriesFromLogbook(ctx context.Context, arg GetEntriesFromLogbookParams) ([]Entry, error) {
 	rows, err := q.db.QueryContext(ctx, getEntriesFromLogbook, arg.Logbookid, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetEntriesFromLogbookRow
+	var items []Entry
 	for rows.Next() {
-		var i GetEntriesFromLogbookRow
+		var i Entry
 		if err := rows.Scan(
 			&i.Entryid,
 			&i.Title,
 			&i.Description,
 			&i.Createdon,
 			&i.Createdby,
+			&i.Logbookid,
 		); err != nil {
 			return nil, err
 		}
@@ -135,7 +122,8 @@ EntryId,
 Title,
 Description,
 CreatedOn,
-CreatedBy
+CreatedBy,
+LogbookId
 FROM entries 
 WHERE EntryId=$1
 AND LogbookId=$2
@@ -146,23 +134,45 @@ type GetEntryFromLogbookParams struct {
 	Logbookid int32
 }
 
-type GetEntryFromLogbookRow struct {
-	Entryid     int32
-	Title       string
-	Description string
-	Createdon   time.Time
-	Createdby   int32
-}
-
-func (q *Queries) GetEntryFromLogbook(ctx context.Context, arg GetEntryFromLogbookParams) (GetEntryFromLogbookRow, error) {
+func (q *Queries) GetEntryFromLogbook(ctx context.Context, arg GetEntryFromLogbookParams) (Entry, error) {
 	row := q.db.QueryRowContext(ctx, getEntryFromLogbook, arg.Entryid, arg.Logbookid)
-	var i GetEntryFromLogbookRow
+	var i Entry
 	err := row.Scan(
 		&i.Entryid,
 		&i.Title,
 		&i.Description,
 		&i.Createdon,
 		&i.Createdby,
+		&i.Logbookid,
+	)
+	return i, err
+}
+
+const getLatestEntry = `-- name: GetLatestEntry :one
+SELECT
+EntryId,
+Title,
+Description,
+CreatedOn,
+CreatedBy,
+LogbookId
+FROM entries 
+WHERE LogbookId=$1
+ORDER BY CreatedOn DESC
+LIMIT 1 
+OFFSET 0
+`
+
+func (q *Queries) GetLatestEntry(ctx context.Context, logbookid int32) (Entry, error) {
+	row := q.db.QueryRowContext(ctx, getLatestEntry, logbookid)
+	var i Entry
+	err := row.Scan(
+		&i.Entryid,
+		&i.Title,
+		&i.Description,
+		&i.Createdon,
+		&i.Createdby,
+		&i.Logbookid,
 	)
 	return i, err
 }
@@ -207,5 +217,29 @@ func (q *Queries) InsertNewEntryInLogbook(ctx context.Context, arg InsertNewEntr
 		arg.Description,
 		arg.Createdby,
 		arg.Logbookid,
+	)
+}
+
+const updateEntryFromLogbook = `-- name: UpdateEntryFromLogbook :execresult
+UPDATE entries 
+SET title = $3,
+description = $4
+WHERE entryid = $1
+AND logbookid = $2
+`
+
+type UpdateEntryFromLogbookParams struct {
+	Entryid     int32
+	Logbookid   int32
+	Title       string
+	Description string
+}
+
+func (q *Queries) UpdateEntryFromLogbook(ctx context.Context, arg UpdateEntryFromLogbookParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, updateEntryFromLogbook,
+		arg.Entryid,
+		arg.Logbookid,
+		arg.Title,
+		arg.Description,
 	)
 }

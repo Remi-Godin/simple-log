@@ -4,7 +4,8 @@ EntryId,
 Title,
 Description,
 CreatedOn,
-CreatedBy
+CreatedBy,
+LogbookId
 FROM entries 
 WHERE LogbookId=$1
 ORDER BY CreatedOn DESC
@@ -18,7 +19,8 @@ EntryId,
 Title,
 Description,
 CreatedOn,
-CreatedBy
+CreatedBy,
+LogbookId
 FROM entries 
 WHERE LogbookId=$1;
 
@@ -28,7 +30,8 @@ EntryId,
 Title,
 Description,
 CreatedOn,
-CreatedBy
+CreatedBy,
+LogbookId
 FROM entries 
 WHERE LogbookId=$1
 ORDER BY CreatedOn DESC
@@ -41,7 +44,8 @@ EntryId,
 Title,
 Description,
 CreatedOn,
-CreatedBy
+CreatedBy,
+LogbookId
 FROM entries 
 WHERE EntryId=$1
 AND LogbookId=$2;
@@ -61,3 +65,10 @@ INSERT INTO entries(Title,Description,CreatedBy,LogbookId) VALUES
 
 -- name: DeleteEntryFromLogbook :execresult
 DELETE FROM entries WHERE EntryId=$1 AND LogbookId=$2;
+
+-- name: UpdateEntryFromLogbook :execresult
+UPDATE entries 
+SET title = $3,
+description = $4
+WHERE entryid = $1
+AND logbookid = $2;

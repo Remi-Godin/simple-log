@@ -10,8 +10,10 @@
 {{$description := .Description}}
 {{$createdon := .Createdon}}
 {{$createdby := .Createdby}}
+{{$logbookid := .Logbookid}}
 
-<div class="logbook-entry round-corners popup-anim">
+<div class="logbook-entry round-corners popup-anim" hx-trigger="click" hx-get="/modal/edit/{{$logbookid}}/{{$entryid}}"
+    hx-target="body" hx-swap="beforeend">
     <div class="bg-1 white-txt text-subtitle small-pad" id="">
         <p>{{ $entrytitle }}</p>
     </div>
@@ -22,7 +24,7 @@
     </div>
     <div class="bg-3 flex-row flex-grow-1 space-between side-pad-1">
         <p>{{ $createdon }}</p>
-        <p>{{ $createdby }}</p>
+        <p>{{ $entryid }}</p>
     </div>
 </div>
 {{ end }}

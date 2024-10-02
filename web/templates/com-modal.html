@@ -1,13 +1,47 @@
-{{ define "modal" }}
+{{ block "modal" .}}
+{{ $entryid := .Entryid }}
+{{ $title := .Title }}
+{{ $description := .Description }}
+{{ $logbookid := .Logbookid }}
+
 <div id="modal" _="on closeModal add .closing then wait for animationend then remove me">
     <div class="modal-underlay" _="on click trigger closeModal"></div>
     <div class="modal-content">
-        {{ template "new-entry" }}
+
+        <div class="new-entry-container">
+            <div class="bg-1 white-txt small-pad height-2 center text-title">
+                {{ if $entryid }}
+                Update Entry
+                {{ else }}
+                Create New Entry
+                {{ end }}
+            </div>
+            <div class="bg-2 big-pad">
+                <form hx-post="/logbook/1/entries" id="new-entry-form">
+                    <label for="title" class="text-subtitle">Title:</label><br>
+                    <input type="text" id="title" name="title" {{ if $title }} value="{{$title}}" {{ end }}
+                        required><br><br>
+
+                    <label for="description" class="text-subtitle">Description:</label><br>
+                    <textarea id="description" name="description" rows="5" cols="50" required>{{ if
+                        $description}}{{$description}}{{ end }}
+                    </textarea><br><br>
+
+                </form>
+            </div>
+        </div>
+        {{ if $entryid }}
+        <input type="submit" value="Update" hx-patch="/logbook/{{$logbookid}}/entries/{{$entryid}}"
+            hx-include="#new-entry-form">
+        {{ else }}
+        <input type="submit" value="Submit" hx-post="/logbook/1/entries" hx-include="#new-entry-form">
+        {{ end }}
+
         <br>
         <br>
-        <button class="btn danger" _="on click trigger closeModal"
-            hx-get="/logbook/1/entries?limit=1&offset=0&latest_only=true" hx-target="#entry-container"
-            hx-swap="beforebegin">Close</button>
+        <button class="btn danger" _="on click trigger closeModal" hx-get="/logbook/1/entries?limit=10&offset=0"
+            hx-target="#entry-container" hx-swap="innerhtml">Close</button>
     </div>
 </div>
+
 {{ end }}

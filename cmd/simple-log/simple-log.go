@@ -99,7 +99,9 @@ func main() {
 	mux.HandleFunc("POST /logbook", InsertNewLogbook)
 	mux.HandleFunc("DELETE /logbook/{logbookId}/entries/{entryId}", DeleteEntryFromLogbook)
 	mux.HandleFunc("DELETE /logbook/{logbookId}", DeleteLogbook)
-	mux.HandleFunc("GET /modal", Modal)
+	mux.HandleFunc("GET /modal/create", ModalCreate)
+	mux.HandleFunc("GET /modal/edit/{logbookId}/{entryId}", ModalEdit)
+	mux.HandleFunc("PATCH /logbook/{logbookId}/entries/{entryId}", UpdateEntryFromLogbook)
 
 	// Start server
 	log.Info().Msg("Starting server at: " + env.db_addr + ":" + env.port)
@@ -109,8 +111,78 @@ func main() {
 	}
 }
 
-func Modal(w http.ResponseWriter, r *http.Request) {
+func UpdateEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
+	// Get entry data from request
+	// Get owner data from token (not yet implemented)
+	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	entryId, err := strconv.Atoi(r.PathValue("entryId"))
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	err = r.ParseForm()
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to parse form but failed")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	title := r.FormValue("title")
+	description := r.FormValue("description")
+	if title == "" || description == "" {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var queryParams database.UpdateEntryFromLogbookParams
+	queryParams.Title = title
+	queryParams.Description = description
+	queryParams.Logbookid = int32(logbookId)
+	queryParams.Entryid = int32(entryId)
+
+	_, err = database.New(conn).UpdateEntryFromLogbook(r.Context(), queryParams)
+	if err != nil {
+		log.Error().Err(err).Msg("Could not complete database query")
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
+func ModalCreate(w http.ResponseWriter, r *http.Request) {
+
 	renderTemplate(w, "modal", nil)
+}
+
+func ModalEdit(w http.ResponseWriter, r *http.Request) {
+	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	entryId, err := strconv.Atoi(r.PathValue("entryId"))
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var queryParams database.GetEntryFromLogbookParams
+	queryParams.Entryid = int32(entryId)
+	queryParams.Logbookid = int32(logbookId)
+
+	data, err := database.New(conn).GetEntryFromLogbook(r.Context(), queryParams)
+	if err != nil {
+		log.Error().Err(err).Msg("Could not complete database query")
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	renderTemplate(w, "modal", data)
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
@@ -158,12 +230,12 @@ func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	query_params := database.GetEntriesFromLogbookParams{
+	queryParams := database.GetEntriesFromLogbookParams{
 		Logbookid: int32(logbookId),
 		Offset:    int32(offset),
 		Limit:     int32(limit),
 	}
-	data, err := database.New(conn).GetEntriesFromLogbook(r.Context(), query_params)
+	data, err := database.New(conn).GetEntriesFromLogbook(r.Context(), queryParams)
 	if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -194,11 +266,11 @@ func GetEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	query_params := database.GetEntryFromLogbookParams{
+	queryParams := database.GetEntryFromLogbookParams{
 		Entryid:   int32(entryId),
 		Logbookid: int32(logbookId),
 	}
-	data, err := database.New(conn).GetEntryFromLogbook(r.Context(), query_params)
+	data, err := database.New(conn).GetEntryFromLogbook(r.Context(), queryParams)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return
@@ -226,9 +298,9 @@ func InsertNewEntryInLogbook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	var query_params database.InsertNewEntryInLogbookParams
-	query_params.Title = title
-	query_params.Description = description
+	var queryParams database.InsertNewEntryInLogbookParams
+	queryParams.Title = title
+	queryParams.Description = description
 	log.Info().Msg(title + ": " + description)
 	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
 	if err != nil {
@@ -236,9 +308,9 @@ func InsertNewEntryInLogbook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	query_params.Createdby = 1 // FIXME: This needs to reflect who created the entry
-	query_params.Logbookid = int32(logbookId)
-	_, err = database.New(conn).InsertNewEntryInLogbook(r.Context(), query_params)
+	queryParams.Createdby = 1 // FIXME: This needs to reflect who created the entry
+	queryParams.Logbookid = int32(logbookId)
+	_, err = database.New(conn).InsertNewEntryInLogbook(r.Context(), queryParams)
 	if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -259,11 +331,11 @@ func DeleteEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	query_params := database.DeleteEntryFromLogbookParams{
+	queryParams := database.DeleteEntryFromLogbookParams{
 		Entryid:   int32(entryId),
 		Logbookid: int32(logbookId),
 	}
-	result, err := database.New(conn).DeleteEntryFromLogbook(r.Context(), query_params)
+	result, err := database.New(conn).DeleteEntryFromLogbook(r.Context(), queryParams)
 	if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -286,8 +358,8 @@ func InsertNewLogbook(w http.ResponseWriter, r *http.Request) {
 	log.Info().Msg("Inserting new logbook")
 	// Decode json data in body
 	decoder := json.NewDecoder(r.Body)
-	var query_params database.InsertNewLogbookParams
-	err := decoder.Decode(&query_params)
+	var queryParams database.InsertNewLogbookParams
+	err := decoder.Decode(&queryParams)
 	if err != nil {
 		log.Error().Err(err).Msg("Could not decode json payload.")
 		w.WriteHeader(http.StatusBadRequest)
@@ -295,10 +367,10 @@ func InsertNewLogbook(w http.ResponseWriter, r *http.Request) {
 	}
 	// Set Ownedby to the user that sent the request
 	// FIXME: This needs to reflect whoever created the logbook
-	query_params.Ownedby = 1
+	queryParams.Ownedby = 1
 
 	// Execute the query
-	_, err = database.New(conn).InsertNewLogbook(r.Context(), query_params)
+	_, err = database.New(conn).InsertNewLogbook(r.Context(), queryParams)
 	if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
 		w.WriteHeader(http.StatusInternalServerError)
