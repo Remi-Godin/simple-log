@@ -1,4 +1,7 @@
 # SimpleLog 
+> [!IMPORTANT]
+> This project is still a work in progress!
+
 A simple, infinite-scrolling digital logbook, supporting CRUD operations. The backend is written in `Go`, using `sqlc` to generate typesafe database code from raw Postgres queries. The `Postgres` database itself is deployed using `Docker`.
 
 For the frontend, I use `htmx` and `hyperscript` to handle interactivity, and used basic `html` and `css` to display and style the application.
