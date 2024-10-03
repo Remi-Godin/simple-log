@@ -1,4 +1,7 @@
 # SimpleLog 
+> [!IMPORTANT]
+> This project is still a work in progress!
+
 A simple, infinite-scrolling digital logbook, supporting CRUD operations. The backend is written in `Go`, using `sqlc` to generate typesafe database code from raw Postgres queries. The `Postgres` database itself is deployed using `Docker`.
 
 For the frontend, I use `htmx` and `hyperscript` to handle interactivity, and used basic `html` and `css` to display and style the application.
@@ -6,6 +9,17 @@ For the frontend, I use `htmx` and `hyperscript` to handle interactivity, and us
 To render the `html` to the client, I used the `html/template` package from the standard Go library, and broke down various elments into component templates.
 
 https://github.com/user-attachments/assets/ca942b87-f973-4679-9da3-1b5b65ceb1c8
+
+# Feature roadmap
+- [x] Handle a single logbook
+- [x] Able to create,read,update, and delete entries
+- [x] Infinite scrolling for loading older entries seamlessly
+- [ ] Create new logbooks
+- [ ] Handle multiple users
+- [ ] Implement authentication system
+- [ ] Implement permission system for multi-user logbooks
+- [ ] Add more data to logbook entries
+- [ ] Entry search and filtering
 
 # Deployment
 1. Clone the repo:
