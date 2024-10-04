@@ -82,5 +82,5 @@ func GetLogbook(w http.ResponseWriter, r *http.Request) {
 	}
 	data := logbookId
 	log.Info().Msg(string(data))
-	utils.RenderTemplate(AppData, w, "logbook", nil)
+	utils.RenderTemplate(AppData, w, "logbook", data)
 }
