@@ -13,13 +13,15 @@
 
 <body>
     <header>{{ template "com-logbook-header" . }}</header>
-    <main hx-trigger="load" hx-target="#entry-container" hx-swap="innerHTML"
-        hx-get="/logbook/{{.}}/entries?limit=5&offset=0">
-        <div class="entry-container" id="entry-container">
+    <main hx-trigger="load" hx-target="#entry-container" hx-swap="innerHTML" hx-get="{{.Links.Entries}}">
+        <div class="entry-container">
+
+            <div id="entry-container"></div>
+
         </div>
     </main>
     <footer class="center">
-        <a class="white-txt"
+        <a class="text-white"
             href="https://github.com/Remi-Godin/simple-log">https://github.com/Remi-Godin/simple-log</a>
     </footer>
 </body>

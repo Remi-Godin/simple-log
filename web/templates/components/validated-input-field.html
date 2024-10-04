@@ -1,0 +1,10 @@
+{{ block "validated-input-field" . }}
+<div id="{{.FieldId}}" class="validated-input-field">
+    <label for="{{.FieldName}}">{{.FieldNameText}}</label>
+    <input type="{{.FieldType}}" name="{{.FieldName}}" value="{{.FieldValue}}" {{if .Invalid}} class="invalid" {{end}}
+        {{if .Valid}} class="valid" {{end}} hx-get="{{.Links.ValidateField}}" />
+    <div class="error-message">
+        <p>{{.Err}}</p>
+    </div>
+</div>
+{{ end }}

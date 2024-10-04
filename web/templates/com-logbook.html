@@ -1,0 +1,33 @@
+{{ block "com-logbook" . }}
+{{ range .Logbooks }}
+
+<div class="logbook-card highlight-anim shadow" hx-get="/page/logbook/{{ .Logbookid }}" hx-trigger="click"
+    hx-target="#main-container" hx-swap="innerHTML">
+    <div class="logbook-card-container">
+
+        <div class="center-content">
+            <div class="center-content icon-1 ">
+                <div class="center-content icon-2 shadow-inset">
+                    <img src="/assets/book.svg" alt="Logbook" />
+                </div>
+            </div>
+        </div>
+        <div class="flex-column">
+            <div class="header">
+                <h1 title="{{ .Logbookid }}">{{ .Title }}</h1>
+            </div>
+            <div class="content">
+                <h2>{{ .Description }}</h2>
+            </div>
+            <div class="footer">
+                <p title="{{ .Email }}">Owner: {{ .Firstname }} {{ .Lastname }} </p>
+                <p>Created: {{ .Createdon }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}
+{{ if .Links.LoadMore }}
+{{ template "com-scroll-trigger" . }}
+{{ end }}
+{{ end }}

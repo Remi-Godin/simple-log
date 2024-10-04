@@ -1,0 +1,13 @@
+{{ block "com-input-field" . }}
+<div id="{{.FieldId}}" class="input-field">
+    <label for="{{.FieldName}}">{{.FieldNameText}}</label>
+    <input type="{{.FieldType}}" name="{{.FieldName}}" value="{{.FieldValue}}" />
+</div>
+{{ end }}
+
+{{ block "com-textarea-field" . }}
+<div id="{{.FieldId}}" class="input-field">
+    <label for="{{.FieldName}}">{{.FieldNameText}}</label>
+    <textarea rows="4" cols="50" name="{{.FieldName}}">{{.FieldValue}}</textarea>
+</div>
+{{ end }}

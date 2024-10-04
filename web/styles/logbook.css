@@ -1,10 +1,50 @@
 /*
- * Global settings
+ * Default settings
  */
+
 
 * {
     margin: 0;
     padding: 0;
+}
+
+:root {
+    /*
+     * Input field highlights
+     */
+    --shadow-green: rgba(0, 050, 0, 0.5);
+    --shadow-red: rgba(150, 0, 0, 0.5);
+    --shadow-blue: rgba(100, 100, 250, 0.5);
+    /*
+     * Color scheme
+     */
+    --bg-0: #11151c;
+    --bg-1: #212d40;
+    --bg-2: #e8f1f2;
+    --bg-3: #fff;
+    --txt-1: #f0f7f4;
+    --txt-2: #11151c;
+    --txt-detail: #666;
+    --highlight-1-1: #1b98e0;
+    --highlight-1-2: #2db0f2;
+    --highlight-2-1: #2db0f2;
+    --highlight-2-2: #4bb8f2;
+    --error: rgb(255, 50, 50);
+    --error-1: #f81212;
+    --error-2: #fe2e2e;
+    --error-3: #ff5151;
+    --success: rgb(100, 255, 100);
+    --shadow: rgb(0, 0, 0, 0.3);
+    /*
+     * Gradients
+     */
+    --gradient-1: linear-gradient(to right, var(--highlight-1-1), var(--highlight-2-2));
+    --gradient-2: linear-gradient(to right, var(--highlight-2-1), var(--highlight-2-2));
+    --gradient-3: linear-gradient(to right, var(--highlight-1-1), var(--highlight-1-2));
+
+    --gradient-4: linear-gradient(to right, var(--error-1), var(--error-3));
+    --gradient-5: linear-gradient(to right, var(--error-2), var(--error-3));
+    --gradient-6: linear-gradient(to right, var(--error-1), var(--error-2));
 }
 
 html,
@@ -49,93 +89,64 @@ textarea {
     resize: vertical;
 }
 
-
-/*
- * Backgrounds
- */
-
-.bg-1 {
-    background: #23395b;
+input {
+    border-radius: 0.1em;
 }
 
-.bg-2 {
-    background: #e9ecef;
+h1 {
+    font-family: arial;
 }
 
-.bg-3 {
-    background: #f8f9fa;
+h2 {
+    font-family: arial;
 }
 
-/*
- * Text
- */
-
-.text-subtitle {
-    font-size: 1.2em;
-    font-family: sans-serif;
+h3 {
+    font-family: arial;
 }
 
-.text-title {
-    font-size: 2em;
-    font-family: sans-serif;
+.error input {
+    box-shadow: 0 0 3px #CC0000;
 }
 
-.white-txt {
-    color: #fff;
+.valid input {
+    box-shadow: 0 0 3px #36CC00;
 }
-
-/*
- * Height 
- */
-
-.height-2 {
-    height: 2em;
-}
-
-.height-3 {
-    height: 3em;
-}
-
-.height-4 {
-    height: 4em;
-}
-
 
 /*
  * Appearance settings
  */
 
-.v-center {
+.shadow {
+    box-shadow: 0px 0px 8px 2px var(--shadow)
+}
+
+.shadow-inset {
+    box-shadow: inset 0px 0px 8px 4px var(--shadow)
+}
+
+.shadow-select {
+    box-shadow: 0px 0px 8px 4px var(--highlight-1-1);
+}
+
+.center-v {
     align-content: center;
+    align-items: center;
 }
 
-.hide-overflow {
-    overflow: hidden;
-}
-
-.round-corners {
-    border-radius: 0.5em;
+.center-h {
+    justify-content: center;
+    justify-items: center;
+    justify-self: center;
 }
 
 /*
  * Flex, padding, and margins
  */
 
-.small-pad {
-    padding: 0.2em;
-}
-
-.big-pad {
-    padding: 1em;
-}
-
-.flex-col {
+.flex-column {
     display: flex;
     flex-direction: column;
-}
-
-.flex-grow-1 {
-    flex-grow: 1;
 }
 
 .flex-row {
@@ -143,18 +154,12 @@ textarea {
     flex-direction: row;
 }
 
-
 .space-between {
     justify-content: space-between;
 }
 
 .space-around {
     justify-content: space-around;
-}
-
-.side-pad-1 {
-    padding-left: 0.2em;
-    padding-right: 0.2em;
 }
 
 
@@ -170,11 +175,27 @@ textarea {
     background: #23395b;
 }
 
-
-
 .entry-container {
     flex: 1;
     overflow-y: scroll;
+}
+
+.homepage-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    max-width: 40em;
+    max-height: 40em;
+}
+
+.homepage-container input {
+    font-size: 1.5em;
+}
+
+.floating-window {
+    display: flex;
+    flex-direction: column;
+    height: 25em;
 }
 
 .logbook-entry {
@@ -188,7 +209,11 @@ textarea {
 }
 
 .popup-anim:hover {
-    transform: scale(1.008);
+    transform: scale(1.1);
+}
+
+.highlight-anim:hover {
+    box-shadow: 0px 0px 8px 4px var(--highlight-1-1);
 }
 
 .new-entry-container {
@@ -199,14 +224,13 @@ textarea {
     margin: 0em;
 }
 
-.center {
-    align-content: center;
-    justify-content: center;
-    text-align: center;
-}
-
 .full-width {
     width: 100%;
+    flex: 1;
+}
+
+.full-heigth {
+    height: 100%;
     flex: 1;
 }
 
@@ -273,11 +297,11 @@ textarea {
     margin-top: 10vh;
 
     /* Sizing for visible dialog */
-    width: 100%;
     max-width: 600px;
 
     /* Display properties for visible dialog*/
     border-radius: 8px;
+    overflow: hidden;
     box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.3);
     background-color: rgba(0, 0, 0, 0);
     padding: 0px;
@@ -340,4 +364,313 @@ textarea {
     100% {
         transform: scale(0.9);
     }
+}
+
+
+
+/**
+ * validated input field styling
+ */
+
+
+.error-message {
+    color: var(--error);
+}
+
+.form-submission-message {
+    font-size: 0.9em;
+    min-height: 1.5em;
+}
+
+.input-field {
+    min-height: 8em;
+    font-family: 'arial';
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.input-field input {
+    padding: 0.8em;
+    border-radius: 0.4em;
+    border: 1px grey solid;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input-field label {
+    font-weight: 700;
+    min-height: 1.5em;
+}
+
+.red-letter {
+    color: red;
+}
+
+
+.input-field .error-message {
+    min-height: 3.8em;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+}
+
+.input-field .valid {
+    border-color: var(--success);
+    box-shadow: 0px 0px 4px 2px var(--shadow-green);
+}
+
+.input-field .invalid {
+    border-color: var(--error);
+    box-shadow: 0px 0px 4px 2px var(--shadow-red);
+}
+
+.form-container {
+    background: var(--bg-2);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 2em;
+    max-width: 25em;
+}
+
+.floating-zone {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-container {
+    border-radius: 1em;
+    background: var(--bg-2);
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-container .header {
+    background: var(--bg-1);
+    min-height: 5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-container .footer {
+    padding: 2em;
+}
+
+input[type="submit"] {
+    background: var(--gradient-1);
+    color: white;
+    font-weight: 700;
+    font-size: 1.2em;
+    border-radius: 0.4em;
+    border: 1px grey solid;
+    min-height: 3em;
+}
+
+input[type="submit"]:hover {
+    background: var(--gradient-2);
+}
+
+input[type="submit"]:active {
+    background: var(--gradient-3);
+}
+
+input[type="submit"].delete {
+    margin-top: 1rem;
+    background: var(--gradient-4);
+    color: white;
+    font-weight: 700;
+    font-size: 1.2em;
+    border-radius: 0.4em;
+    border: 1px grey solid;
+    min-height: 2em;
+}
+
+input[type="submit"].delete:hover {
+    background: var(--gradient-5);
+}
+
+input[type="submit"].delete:active {
+    background: var(--gradient-6);
+}
+
+.form-header {
+    font-family: "arial";
+    min-height: 5em;
+}
+
+.form-header p {
+    color: var(--txt-detail);
+}
+
+.logbook-container {
+    display: grid;
+    height: 100vh;
+    grid-template-columns: auto;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        'h t n'
+        'c c c'
+        'f f f';
+}
+
+.logbook-header {
+    grid-area: h;
+    background: red;
+    background: var(--bg-1);
+    z-index: -1;
+    padding: 0.3em;
+}
+
+.logbook-content {
+    grid-area: c;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    overflow-y: scroll;
+}
+
+.logbook-menu {
+    resize: horizontal;
+    overflow: auto;
+    min-width: 10em;
+    background: var(--bg-2);
+}
+
+.logbook-entries-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: scroll;
+}
+
+.logbook-title {
+    grid-area: t;
+    background: var(--bg-1);
+    color: var(--txt-1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logbook-footer {
+    grid-area: f;
+    background: var(--bg-0);
+}
+
+.logbook-nav {
+    grid-area: n;
+    background: var(--bg-1);
+    display: flex;
+    flex-direction: row;
+    padding: 1em;
+    justify-content: right;
+}
+
+.logbook-nav img {
+    max-height: 2.6rem;
+    margin-left: 1.0rem;
+}
+
+.logbook-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-2);
+    margin: 1em;
+    border-top-left-radius: 4em;
+    border-bottom-left-radius: 4em;
+}
+
+.logbook-card-container {
+    display: flex;
+    flex-direction: row;
+    border-top-left-radius: 3.5em;
+    border-bottom-left-radius: 3.5em;
+}
+
+
+.logbook-card .header {
+    flex: 1;
+    padding: 0.2em;
+    color: var(--bg-1);
+    font-family: arial;
+}
+
+.logbook-card .content {
+    padding: 0.4em;
+    flex-grow: 1;
+}
+
+.logbook-card .footer {
+    padding: 0.4em;
+    flex: 1;
+}
+
+
+.center-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logbook-card .icon-1 {
+    height: 7em;
+    width: 7em;
+    border-radius: 50%;
+    padding: 0.8em;
+    background: var(--bg-1);
+}
+
+.logbook-card .icon-2 {
+    height: 6em;
+    width: 6em;
+    max-height: 7em;
+    max-width: 7em;
+    border-radius: 50%;
+    background: var(--bg-3);
+}
+
+.logbook-card img {
+    max-height: 4em;
+    padding: 1.0em;
+    display: flex;
+    flex-direction: column;
+}
+
+.logbook-entry-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 1em;
+    background: var(--bg-2);
+    margin: 1em;
+}
+
+.logbook-entry-card .header {
+    border-top-left-radius: 1em;
+    border-top-right-radius: 1em;
+    padding: 0.5em;
+    font-size: 0.8em;
+    color: var(--txt-1);
+    background: var(--bg-1);
+}
+
+.logbook-entry-card .content {
+    padding: 0.4em;
+    flex: 1;
+    background: var(--bg-2);
+}
+
+.logbook-entry-card .footer {
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
+    padding-left: 0.5em;
+    min-height: 1em;
+    color: var(--txt-2);
+    background: var(--bg-3);
 }

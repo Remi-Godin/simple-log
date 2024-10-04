@@ -1,0 +1,34 @@
+{{ block "com-form" . }}
+<div class="form-container" hx-ext="response-targets">
+    <div class="form-header">
+        <h1>
+            {{.FormName}}
+        </h1>
+        <p>{{.FormDesc}}</p>
+    </div>
+    <form id="form">
+        {{ range .FormFields }}
+        <div hx-swap="outerHTML" hx-trigger="load" hx-get="{{.}}"></div>
+        {{ end }}
+        {{ if .FormSubmissionLink }}
+        <input type="submit" class="button-width height-2" value="Submit"
+            {{if.Patch}}hx-patch{{else}}hx-post{{end}}="{{ .FormSubmissionLink }}" hx-include="#form"
+            hx-swap="innerHTML" hx-target-error="#form-errors">
+        {{ end }}
+        {{ if .ResourceDeletionLink }}
+        <input type="submit" class="button-width height-2 delete" value="Delete" hx-delete="{{ .ResourceDeletionLink }}"
+            hx-include="#form" hx-swap="innerHTML" hx-target-error="#form-errors">
+        {{ end }}
+        <div id="form-errors" class="form-submission-message">
+        </div>
+    </form>
+</div>
+{{ end }}
+
+{{ block "form-submission-error" . }}
+<div class="form-submission-message">
+    <p class="error-message">
+        {{ . }}
+    </p>
+</div>
+{{ end }}

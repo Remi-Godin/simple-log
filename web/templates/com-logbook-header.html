@@ -1,9 +1,12 @@
 {{ block "com-logbook-header" . }}
 <div class="logbook-header">
-    <div class="bg-1 height-4 v-center small-pad">
+    <div class="bg-1 height-4 center-v pad-s">
         <img src="/assets/logo_white.svg" alt="SimpleLog" />
     </div>
-    <div class="bg-1 height-3 v-center small-pad">
+    <div class="text-white text-title center center-v">
+        {{.LogbookTitle}}
+    </div>
+    <div class="bg-1 height-3 center-v pad-s">
         <img src="/assets/add_button.svg" alt="SimpleLog" class="popup-anim" hx-get="/logbook/{{.}}/modal/create"
             hx-target="body" hx-swap="beforeend" />
     </div>

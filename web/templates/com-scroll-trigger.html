@@ -1,12 +1,8 @@
 {{ block "com-scroll-trigger" . }}
 
-{{$logbookid := .Logbookid}}
-{{$offset := .Offset}}
-{{$limit := .Limit}}
-
-<div class="scroll-trigger" hx-trigger="intersect click" hx-target="#entry-container" hx-swap="beforeend"
-    hx-get="/logbook/{{$logbookid}}/entries?limit={{$limit}}&offset={{$offset}}" _="on intersect wait 0.1s remove me">
-    Loading previous entries...
+<div class="scroll-trigger" hx-trigger="intersect click" hx-target="#main-container" hx-swap="beforeend"
+    hx-get="{{.Links.LoadMore}}" _="on intersect wait 0.1s remove me">
+    Loading previous items...
 </div>
 
 {{ end }}

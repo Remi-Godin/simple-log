@@ -1,37 +1,21 @@
 {{ block "com-logbook-entry" . }}
 
-{{$logbookid := .Logbookid}}
-{{$offset := .Offset}}
-{{$limit := .Limit}}
-{{$loadmore := .LoadMore}}
-
-{{ range .EntryData }}
-
-{{$entryid := .Entryid}}
-{{$entrytitle := .Title}}
-{{$description := .Description}}
-{{$createdon := .Createdon}}
-{{$createdby := .Createdby}}
-{{$logbookid := .Logbookid}}
-
-<div class="logbook-entry round-corners popup-anim" hx-trigger="click"
-    hx-get="/logbook/{{$logbookid}}/entries/{{$entryid}}/modal/edit" hx-target="body" hx-swap="beforeend">
-    <div class="bg-1 white-txt text-subtitle small-pad" id="">
-        <p>{{ $entrytitle }}</p>
+{{ range .Entries }}
+<div class="logbook-entry-card highlight-anim shadow" hx-trigger="click"
+    hx-get="/form/logbook/{{.Logbookid}}/entries/{{.Entryid}}" hx-swap="innerHTML" hx-target="#modals-here">
+    <div class="header" id="">
+        <h1>{{ .Title }}</h1>
     </div>
-    <div class="bg-2 flex-col flex-grow-1">
-        <article>
-            {{ $description }}
-        </article>
+    <div class="content">
+        <p>{{ .Description }}</p>
     </div>
-    <div class="bg-3 flex-row flex-grow-1 space-between side-pad-1">
-        <p>{{ $createdon }}</p>
-        <p>{{ $entryid }}</p>
+    <div class="footer">
+        <p>{{ .Createdon }}</p>
     </div>
 </div>
 {{ end }}
 
-{{ if $loadmore }}
+{{ if .Links.LoadMore }}
 {{ template "com-scroll-trigger" . }}
 {{ end }}
 

@@ -14,6 +14,7 @@ import (
 
 	"github.com/Remi-Godin/simple-log/internal/api"
 	_ "github.com/Remi-Godin/simple-log/internal/database"
+	"github.com/Remi-Godin/simple-log/internal/global"
 	"github.com/Remi-Godin/simple-log/internal/utils"
 )
 
@@ -32,31 +33,33 @@ func main() {
 
 	// Create env variables struct
 	log.Info().Msg("Reading env variables...")
-	api.AppData = utils.AppData{}
-	api.AppData.Env = *utils.LoadEnvVars()
+	global.AppData = utils.AppData{}
+	global.AppData.Env = *utils.LoadEnvVars()
+	log.Info().Msg(global.AppData.Env.AuthSecret)
 
 	// Connect to database
 	log.Info().Msg("Initiating database connection...")
 	connectionString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		api.AppData.Env.Db_addr, api.AppData.Env.Db_port, api.AppData.Env.Postgres_user, api.AppData.Env.Postgres_password, api.AppData.Env.Postgres_db)
+		global.AppData.Env.DbAddr, global.AppData.Env.DbPort, global.AppData.Env.PostgresUser, global.AppData.Env.PostgresPassword, global.AppData.Env.PostgresDb)
 	conn, err := sql.Open("postgres", connectionString)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Could not establish database connection")
 	}
 	defer conn.Close()
 	log.Info().Msg("Database connection successful!")
-	api.AppData.Conn = conn
+	global.AppData.Conn = conn
+	log.Err(conn.Ping())
 
 	// Parse templates
-	api.AppData.Tmpl = template.Must(template.ParseGlob("./web/templates/*.html"))
+	global.AppData.Tmpl = template.Must(template.ParseGlob("./web/templates/*.html"))
 
 	// Start new mux
 	mux := http.NewServeMux()
 	api.SetRoutes(mux)
 
 	// Start server
-	log.Info().Msg("Starting server at: " + api.AppData.Env.Db_addr + ":" + api.AppData.Env.Port)
-	err = http.ListenAndServe(api.AppData.Env.Db_addr+":"+api.AppData.Env.Port, mux)
+	log.Info().Msg("Starting server at: " + global.AppData.Env.DbAddr + ":" + global.AppData.Env.Port)
+	err = http.ListenAndServe(global.AppData.Env.DbAddr+":"+global.AppData.Env.Port, mux)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Server failure")
 	}
