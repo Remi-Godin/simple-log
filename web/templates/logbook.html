@@ -1,5 +1,4 @@
-{{ define "logbook" }}
-
+{{ block "logbook" . }}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,14 +12,10 @@
 </head>
 
 <body>
-    <header>{{ template "com-logbook-header" }}</header>
+    <header>{{ template "com-logbook-header" . }}</header>
     <main hx-trigger="load" hx-target="#entry-container" hx-swap="innerHTML"
-        hx-get="/logbook/1/entries?limit=5&offset=0">
-        <div class="entry-container">
-            <div id="entry-container"></div>
-
-
-
+        hx-get="/logbook/{{.}}/entries?limit=5&offset=0">
+        <div class="entry-container" id="entry-container">
         </div>
     </main>
     <footer class="center">

@@ -13,6 +13,7 @@ import (
 
 type PageLoadData struct {
 	EntryData any
+	Logbookid int
 	Limit     int
 	Offset    int
 	LoadMore  bool
@@ -24,52 +25,68 @@ func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
+
+	// Parse URL parameters
 	request_params := r.URL.Query()
 	limit_str := request_params.Get("limit")
 	offset_str := request_params.Get("offset")
-	latest_only := request_params.Get("latest_only")
-	if limit_str == "" || offset_str == "" {
-		data, err := database.New(AppData.Conn).GetAllEntriesFromLogbook(r.Context(), int32(logbookId))
-		if err != nil {
-			log.Error().Err(err).Msg("Could not complete database query")
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		utils.RenderTemplate(AppData, w, "com-logbook-entry", data)
-		return
-	}
-	offset, err := strconv.Atoi(offset_str)
-	if err != nil {
-		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	limit, err := strconv.Atoi(limit_str)
-	if err != nil {
-		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+
+	// Instantiate entry query parameters
 	queryParams := database.GetEntriesFromLogbookParams{
 		Logbookid: int32(logbookId),
-		Offset:    int32(offset),
-		Limit:     int32(limit),
 	}
+	var offset int
+	var limit int
+
+	// Check for specific limit values or use defaults
+	if limit_str == "" {
+		queryParams.Limit = 10
+	} else {
+		offset, err = strconv.Atoi(offset_str)
+		if err != nil {
+			log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+	}
+	// Check for specific offset values or use defaults
+	if offset_str == "" {
+		queryParams.Offset = 0
+	} else {
+		limit, err = strconv.Atoi(limit_str)
+		if err != nil {
+			log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+	}
+
+	// Load read values to query parameters
+	queryParams.Limit = int32(limit)
+	queryParams.Offset = int32(offset)
+
+	// Run query
 	data, err := database.New(AppData.Conn).GetEntriesFromLogbook(r.Context(), queryParams)
 	if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	// Increment offset count on request for loading older entries
+	// If the return row count matches the limit value, then allow to load more
 	var page_data PageLoadData
-	if latest_only == "true" {
-		page_data = PageLoadData{data, 1, 0, false}
-	} else if len(data) == limit {
-		page_data = PageLoadData{data, limit, limit + offset, true}
+	if len(data) == limit {
+		page_data = PageLoadData{data, logbookId, limit, limit + offset, true}
+		log.Info().Msg("Loading scroll trigger...")
 	} else {
-		page_data = PageLoadData{data, limit, limit + offset, false}
+		page_data = PageLoadData{data, logbookId, limit, limit + offset, false}
+		log.Info().Msg("No more entries to load...")
 	}
+
+	// Render the html
 	utils.RenderTemplate(AppData, w, "com-logbook-entry", page_data)
 
 }
@@ -158,8 +175,14 @@ func DeleteEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
 }
 
 func ModalCreate(w http.ResponseWriter, r *http.Request) {
-
-	utils.RenderTemplate(AppData, w, "modal", nil)
+	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	data := database.Entry{Logbookid: int32(logbookId)}
+	utils.RenderTemplate(AppData, w, "modal", data)
 }
 
 func ModalEdit(w http.ResponseWriter, r *http.Request) {

@@ -19,8 +19,8 @@ func SetRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /logbook", InsertNewLogbook)
 	mux.HandleFunc("DELETE /logbook/{logbookId}/entries/{entryId}", DeleteEntryFromLogbook)
 	mux.HandleFunc("DELETE /logbook/{logbookId}", DeleteLogbook)
-	mux.HandleFunc("GET /modal/create", ModalCreate)
-	mux.HandleFunc("GET /modal/edit/{logbookId}/{entryId}", ModalEdit)
+	mux.HandleFunc("GET /logbook/{logbookId}/modal/create", ModalCreate)
+	mux.HandleFunc("GET /logbook/{logbookId}/entries/{entryId}/modal/edit", ModalEdit)
 	mux.HandleFunc("PATCH /logbook/{logbookId}/entries/{entryId}", UpdateEntryFromLogbook)
 
 }

@@ -1,8 +1,10 @@
 {{ block "com-logbook-entry" . }}
 
+{{$logbookid := .Logbookid}}
 {{$offset := .Offset}}
 {{$limit := .Limit}}
 {{$loadmore := .LoadMore}}
+
 {{ range .EntryData }}
 
 {{$entryid := .Entryid}}
@@ -12,8 +14,8 @@
 {{$createdby := .Createdby}}
 {{$logbookid := .Logbookid}}
 
-<div class="logbook-entry round-corners popup-anim" hx-trigger="click" hx-get="/modal/edit/{{$logbookid}}/{{$entryid}}"
-    hx-target="body" hx-swap="beforeend">
+<div class="logbook-entry round-corners popup-anim" hx-trigger="click"
+    hx-get="/logbook/{{$logbookid}}/entries/{{$entryid}}/modal/edit" hx-target="body" hx-swap="beforeend">
     <div class="bg-1 white-txt text-subtitle small-pad" id="">
         <p>{{ $entrytitle }}</p>
     </div>
@@ -28,10 +30,9 @@
     </div>
 </div>
 {{ end }}
+
 {{ if $loadmore }}
-<div class="scroll-trigger" hx-trigger="intersect delay:0.1s, click" hx-target="#entry-container" hx-swap="beforeend"
-    hx-get="/logbook/1/entries?limit={{$limit}}&offset={{$offset}}" _="on intersect wait 0.1s remove me">
-    Load more...
-</div>
+{{ template "com-scroll-trigger" . }}
 {{ end }}
+
 {{ end }}

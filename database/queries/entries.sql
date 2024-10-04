@@ -1,29 +1,3 @@
--- name: GetLatestEntry :one
-SELECT
-EntryId,
-Title,
-Description,
-CreatedOn,
-CreatedBy,
-LogbookId
-FROM entries 
-WHERE LogbookId=$1
-ORDER BY CreatedOn DESC
-LIMIT 1 
-OFFSET 0;
-
-
--- name: GetAllEntriesFromLogbook :many
-SELECT
-EntryId,
-Title,
-Description,
-CreatedOn,
-CreatedBy,
-LogbookId
-FROM entries 
-WHERE LogbookId=$1;
-
 -- name: GetEntriesFromLogbook :many
 SELECT
 EntryId,
