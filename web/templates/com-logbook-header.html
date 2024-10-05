@@ -3,6 +3,9 @@
     <div class="bg-1 height-4 v-center small-pad">
         <img src="/assets/logo_white.svg" alt="SimpleLog" />
     </div>
+    <div class="white-txt text-title center v-center">
+        {{.LogbookTitle}}
+    </div>
     <div class="bg-1 height-3 v-center small-pad">
         <img src="/assets/add_button.svg" alt="SimpleLog" class="popup-anim" hx-get="/logbook/{{.}}/modal/create"
             hx-target="body" hx-swap="beforeend" />

@@ -15,6 +15,14 @@ FROM logbooks
 LIMIT $1
 OFFSET $2;
 
+-- name: GetLogbookData :one
+SELECT
+LogbookId,
+Title,
+OwnedBy
+FROM logbooks
+WHERE LogbookId = $1;
+
 -- name: InsertNewLogbook :execresult
 INSERT INTO logbooks(Title,OwnedBy) VALUES
 ($1,$2);

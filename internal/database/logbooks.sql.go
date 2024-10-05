@@ -18,6 +18,22 @@ func (q *Queries) DeleteLogbook(ctx context.Context, logbookid int32) (sql.Resul
 	return q.db.ExecContext(ctx, deleteLogbook, logbookid)
 }
 
+const getLogbookData = `-- name: GetLogbookData :one
+SELECT
+LogbookId,
+Title,
+OwnedBy
+FROM logbooks
+WHERE LogbookId = $1
+`
+
+func (q *Queries) GetLogbookData(ctx context.Context, logbookid int32) (Logbook, error) {
+	row := q.db.QueryRowContext(ctx, getLogbookData, logbookid)
+	var i Logbook
+	err := row.Scan(&i.Logbookid, &i.Title, &i.Ownedby)
+	return i, err
+}
+
 const getLogbooks = `-- name: GetLogbooks :many
 SELECT
 LogbookId,

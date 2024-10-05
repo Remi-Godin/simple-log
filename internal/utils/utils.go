@@ -2,6 +2,7 @@ package utils
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
 	"net/http"
 	"os"
@@ -24,6 +25,24 @@ type AppData struct {
 	Conn *sql.DB
 	Tmpl *template.Template
 	Env  Env
+}
+
+type Link struct {
+	Path   string
+	Rel    string
+	Method string
+}
+
+func (link Link) ToString() string {
+	return fmt.Sprintf("%s %s", link.Method, link.Path)
+}
+
+func NewLink(path string, rel string, method string) Link {
+	return Link{
+		path,
+		rel,
+		method,
+	}
 }
 
 func GenerateAppData(conn *sql.DB, tmpl *template.Template) AppData {

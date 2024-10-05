@@ -1,37 +1,24 @@
 {{ block "com-logbook-entry" . }}
 
-{{$logbookid := .Logbookid}}
-{{$offset := .Offset}}
-{{$limit := .Limit}}
-{{$loadmore := .LoadMore}}
-
 {{ range .EntryData }}
-
-{{$entryid := .Entryid}}
-{{$entrytitle := .Title}}
-{{$description := .Description}}
-{{$createdon := .Createdon}}
-{{$createdby := .Createdby}}
-{{$logbookid := .Logbookid}}
-
-<div class="logbook-entry round-corners popup-anim" hx-trigger="click"
-    hx-get="/logbook/{{$logbookid}}/entries/{{$entryid}}/modal/edit" hx-target="body" hx-swap="beforeend">
+<div class="logbook-entry round-corners popup-anim" hx-trigger="click" hx-get="/logbook/1/entries/1/modal/edit"
+    hx-target="body" hx-swap="beforeend">
     <div class="bg-1 white-txt text-subtitle small-pad" id="">
-        <p>{{ $entrytitle }}</p>
+        <p>{{ .Title }}</p>
     </div>
     <div class="bg-2 flex-col flex-grow-1">
         <article>
-            {{ $description }}
+            {{ .Description }}
         </article>
     </div>
     <div class="bg-3 flex-row flex-grow-1 space-between side-pad-1">
-        <p>{{ $createdon }}</p>
-        <p>{{ $entryid }}</p>
+        <p>{{ .Createdon }}</p>
+        <p>{{ .Entryid }}</p>
     </div>
 </div>
 {{ end }}
 
-{{ if $loadmore }}
+{{ if .Links.Entries }}
 {{ template "com-scroll-trigger" . }}
 {{ end }}
 

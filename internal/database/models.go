@@ -24,5 +24,9 @@ type Logbook struct {
 }
 
 type User struct {
-	Userid int32
+	Userid       int32
+	Firstname    string
+	Lastname     string
+	Email        string
+	Passwordhash string
 }
