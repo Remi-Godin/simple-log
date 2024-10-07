@@ -13,20 +13,19 @@ type Entry struct {
 	Title       string
 	Description string
 	Createdon   time.Time
-	Createdby   int32
+	Createdby   string
 	Logbookid   int32
 }
 
 type Logbook struct {
 	Logbookid int32
 	Title     string
-	Ownedby   int32
+	Ownedby   string
 }
 
 type User struct {
-	Userid       int32
+	Email        string
 	Firstname    string
 	Lastname     string
-	Email        string
 	Passwordhash string
 }

@@ -13,30 +13,6 @@ import (
 const getUserInfo = `-- name: GetUserInfo :one
 SELECT
 FirstName,
-LastName,
-Email
-FROM
-users
-WHERE
-userid = $1
-`
-
-type GetUserInfoRow struct {
-	Firstname string
-	Lastname  string
-	Email     string
-}
-
-func (q *Queries) GetUserInfo(ctx context.Context, userid int32) (GetUserInfoRow, error) {
-	row := q.db.QueryRowContext(ctx, getUserInfo, userid)
-	var i GetUserInfoRow
-	err := row.Scan(&i.Firstname, &i.Lastname, &i.Email)
-	return i, err
-}
-
-const getUserInfoFromEmail = `-- name: GetUserInfoFromEmail :one
-SELECT
-FIrstName,
 LastName
 FROM
 users
@@ -44,38 +20,32 @@ WHERE
 Email = $1
 `
 
-type GetUserInfoFromEmailRow struct {
+type GetUserInfoRow struct {
 	Firstname string
 	Lastname  string
 }
 
-func (q *Queries) GetUserInfoFromEmail(ctx context.Context, email string) (GetUserInfoFromEmailRow, error) {
-	row := q.db.QueryRowContext(ctx, getUserInfoFromEmail, email)
-	var i GetUserInfoFromEmailRow
+func (q *Queries) GetUserInfo(ctx context.Context, email string) (GetUserInfoRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserInfo, email)
+	var i GetUserInfoRow
 	err := row.Scan(&i.Firstname, &i.Lastname)
 	return i, err
 }
 
 const getUserPasswordHash = `-- name: GetUserPasswordHash :one
 SELECT
-Email,
 PasswordHash
 FROM
 users
 WHERE
-userid = $1
+Email = $1
 `
 
-type GetUserPasswordHashRow struct {
-	Email        string
-	Passwordhash string
-}
-
-func (q *Queries) GetUserPasswordHash(ctx context.Context, userid int32) (GetUserPasswordHashRow, error) {
-	row := q.db.QueryRowContext(ctx, getUserPasswordHash, userid)
-	var i GetUserPasswordHashRow
-	err := row.Scan(&i.Email, &i.Passwordhash)
-	return i, err
+func (q *Queries) GetUserPasswordHash(ctx context.Context, email string) (string, error) {
+	row := q.db.QueryRowContext(ctx, getUserPasswordHash, email)
+	var passwordhash string
+	err := row.Scan(&passwordhash)
+	return passwordhash, err
 }
 
 const insertNewUser = `-- name: InsertNewUser :execresult

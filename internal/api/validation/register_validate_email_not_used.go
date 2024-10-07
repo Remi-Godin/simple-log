@@ -28,7 +28,7 @@ func ValidateEmail(w http.ResponseWriter, r *http.Request) {
 		data.Err = err.Error()
 	}
 
-	_, err = database.New(global.AppData.Conn).GetUserInfoFromEmail(r.Context(), data.FieldData)
+	_, err = database.New(global.AppData.Conn).GetUserInfo(r.Context(), data.FieldData)
 	if err == nil {
 		log.Info().Msg("USED")
 		data.Err = "Email address already in use. Please select a different one."

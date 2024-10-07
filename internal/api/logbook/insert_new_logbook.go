@@ -22,7 +22,7 @@ func InsertNewLogbook(w http.ResponseWriter, r *http.Request) {
 	}
 	// Set Ownedby to the user that sent the request
 	// FIXME: This needs to reflect whoever created the logbook
-	queryParams.Ownedby = 1
+	queryParams.Ownedby = "regodin@proton.me"
 
 	// Execute the query
 	_, err = database.New(global.AppData.Conn).InsertNewLogbook(r.Context(), queryParams)

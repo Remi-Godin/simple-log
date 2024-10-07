@@ -10,6 +10,7 @@ import (
 	"github.com/Remi-Godin/simple-log/internal/global"
 	"github.com/Remi-Godin/simple-log/internal/utils"
 	"github.com/rs/zerolog/log"
+	passwordValidator "github.com/wagslane/go-password-validator"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -59,25 +60,45 @@ func InsertNewUser(w http.ResponseWriter, r *http.Request) {
 	queryParams := database.InsertNewUserParams{}
 
 	queryParams.Firstname = r.FormValue("first-name")
-	if len(queryParams.Firstname) <= 1 {
+	data.FirstName.FieldData = r.FormValue("first-name")
+	if len(queryParams.Firstname) < 2 {
+		log.Error().Msg("First name too short")
 		fail = true
 		data.FirstName.Err = "First name must be longer than 1 character"
 	}
 
 	queryParams.Lastname = r.FormValue("last-name")
-	if len(queryParams.Lastname) <= 1 {
+	data.LastName.FieldData = r.FormValue("last-name")
+	if len(queryParams.Lastname) < 2 {
+		log.Error().Msg("Last name too short")
 		fail = true
 		data.LastName.Err = "Last name must be longer than 1 character"
 	}
 
 	queryParams.Email = r.FormValue("email")
+	data.Email.FieldData = r.FormValue("email")
 	_, err = mail.ParseAddress(queryParams.Email)
 	if err != nil {
+		log.Error().Msg("Email invalid")
 		fail = true
 		data.Email.Err = err.Error()
 	}
 
+	emailQuery, err := database.New(global.AppData.Conn).GetUserInfo(r.Context(), data.Email.FieldData)
+	log.Info().Msg(fmt.Sprintf("Email: %s,Name: %s %s", data.Email.FieldData, emailQuery.Firstname, emailQuery.Lastname))
+	if err == nil {
+		log.Info().Msg("USED")
+		data.Email.Err = "Email address already in use. Please select a different one."
+		fail = true
+	}
+
 	password := r.FormValue("password")
+	err = passwordValidator.Validate(password, 60)
+	if err != nil {
+		data.Password.Err = err.Error()
+		fail = true
+	}
+
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		fail = true
@@ -86,11 +107,9 @@ func InsertNewUser(w http.ResponseWriter, r *http.Request) {
 		queryParams.Passwordhash = string(hash)
 	}
 
-	log.Info().Msg(fmt.Sprintf("%s %s %s %s", queryParams.Firstname, queryParams.Lastname, queryParams.Email, hash))
 	if fail {
-		log.Info().Msg("ERROR FOUND")
-		utils.RenderTemplate(global.AppData, w, "register-form", data)
 		w.WriteHeader(http.StatusBadRequest)
+		utils.RenderTemplate(global.AppData, w, "register-form", data)
 	} else {
 		database.New(global.AppData.Conn).InsertNewUser(r.Context(), queryParams)
 	}

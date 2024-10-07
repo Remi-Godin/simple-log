@@ -13,28 +13,30 @@
 
 <div id="register-container">
 
-    <form id="register-form">
-        <div id="first-name-input">
-            {{ template "register-first-name" .FirstName }}
-        </div>
-        <br>
-        <div id="last-name-input">
-            {{ template "register-last-name" .LastName }}
-        </div>
-        <br>
-        <div id="email-input">
-            {{ template "register-email" .Email }}
-        </div>
-        <br>
-        <div id="password-input">
-            {{ template "register-password" .Password }}
-        </div>
-        <br>
-    </form>
-    {{ if .Links.Submit }}
-    <input type="submit" class="button-width height-2" value="Submit" hx-post="{{ .Links.Submit }}"
-        hx-target="register-form" hx-swap="innerHTML" hx-include="#register-form">
-    {{ end }}
+    <div>
+        <form id="register-form" class="bg-2">
+            <div id="first-name-input">
+                {{ template "register-first-name" .FirstName }}
+            </div>
+            <br>
+            <div id="last-name-input">
+                {{ template "register-last-name" .LastName }}
+            </div>
+            <br>
+            <div id="email-input">
+                {{ template "register-email" .Email }}
+            </div>
+            <br>
+            <div id="password-input">
+                {{ template "register-password" .Password }}
+            </div>
+            <br>
+        </form>
+        {{ if .Links.Submit }}
+        <input type="submit" class="button-width height-2" value="Submit" hx-post="{{ .Links.Submit }}"
+            hx-include="#register-form">
+        {{ end }}
+    </div>
 
 </div>
 

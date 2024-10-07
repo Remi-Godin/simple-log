@@ -10,7 +10,13 @@ import (
 )
 
 func GetLogbooks(w http.ResponseWriter, r *http.Request) {
-	result, err := database.New(global.AppData.Conn).GetLogbooksOwnedBy(r.Context(), 1)
+	err := r.ParseForm()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	result, err := database.New(global.AppData.Conn).GetLogbooksOwnedBy(r.Context(), r.FormValue("email"))
 	if err != nil {
 		log.Error().Err(err).Msg("Could not complete database query")
 		w.WriteHeader(http.StatusInternalServerError)

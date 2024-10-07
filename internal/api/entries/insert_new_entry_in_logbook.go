@@ -33,7 +33,7 @@ func InsertNewEntryInLogbook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	queryParams.Createdby = 1 // FIXME: This needs to reflect who created the entry
+	queryParams.Createdby = "regodin@proton.me" // FIXME: This needs to reflect who created the entry
 	queryParams.Logbookid = int32(logbookId)
 	_, err = database.New(global.AppData.Conn).InsertNewEntryInLogbook(r.Context(), queryParams)
 	if err != nil {

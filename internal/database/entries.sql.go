@@ -118,7 +118,7 @@ WHERE EntryId=$1
 
 type GetLogbookAndOwnerFromEntryRow struct {
 	Logbookid int32
-	Ownedby   int32
+	Ownedby   string
 }
 
 func (q *Queries) GetLogbookAndOwnerFromEntry(ctx context.Context, entryid int32) (GetLogbookAndOwnerFromEntryRow, error) {
@@ -136,7 +136,7 @@ INSERT INTO entries(Title,Description,CreatedBy,LogbookId) VALUES
 type InsertNewEntryInLogbookParams struct {
 	Title       string
 	Description string
-	Createdby   int32
+	Createdby   string
 	Logbookid   int32
 }
 

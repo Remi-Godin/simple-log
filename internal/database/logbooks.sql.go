@@ -81,7 +81,7 @@ FROM logbooks
 WHERE OwnedBy=$1
 `
 
-func (q *Queries) GetLogbooksOwnedBy(ctx context.Context, ownedby int32) ([]Logbook, error) {
+func (q *Queries) GetLogbooksOwnedBy(ctx context.Context, ownedby string) ([]Logbook, error) {
 	rows, err := q.db.QueryContext(ctx, getLogbooksOwnedBy, ownedby)
 	if err != nil {
 		return nil, err
@@ -111,7 +111,7 @@ INSERT INTO logbooks(Title,OwnedBy) VALUES
 
 type InsertNewLogbookParams struct {
 	Title   string
-	Ownedby int32
+	Ownedby string
 }
 
 func (q *Queries) InsertNewLogbook(ctx context.Context, arg InsertNewLogbookParams) (sql.Result, error) {

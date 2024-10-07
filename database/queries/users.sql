@@ -5,26 +5,15 @@ INSERT INTO users(FirstName,LastName,Email,PasswordHash) VALUES
 -- name: GetUserInfo :one
 SELECT
 FirstName,
-LastName,
-Email
+LastName
 FROM
 users
 WHERE
-userid = $1;
+Email = $1;
 
 -- name: GetUserPasswordHash :one
 SELECT
-Email,
 PasswordHash
-FROM
-users
-WHERE
-userid = $1;
-
--- name: GetUserInfoFromEmail :one
-SELECT
-FIrstName,
-LastName
 FROM
 users
 WHERE
