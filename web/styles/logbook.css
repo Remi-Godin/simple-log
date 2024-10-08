@@ -1,5 +1,5 @@
 /*
- * Global settings
+ * Default settings
  */
 
 * {
@@ -49,6 +49,18 @@ textarea {
     resize: vertical;
 }
 
+input {
+    border-radius: 0.1em;
+}
+
+.error input {
+    box-shadow: 0 0 3px #CC0000;
+}
+
+.valid input {
+    box-shadow: 0 0 3px #36CC00;
+}
+
 
 /*
  * Backgrounds
@@ -80,12 +92,17 @@ textarea {
     font-family: sans-serif;
 }
 
-.white-txt {
+.text-white {
     color: #fff;
 }
 
-.error-message {
+.text-blue {
+    color: #0000ff;
+}
+
+.text-error {
     color: #f00;
+    font-size: 0.7em;
 }
 
 /*
@@ -104,16 +121,44 @@ textarea {
     height: 4em;
 }
 
+.height-5 {
+    height: 5em;
+}
+
+.height-6 {
+    height: 6em;
+}
 
 /*
  * Appearance settings
  */
 
-.v-center {
-    align-content: center;
+.left-align-text {
+    text-align: left;
 }
 
-.hide-overflow {
+.shadow {
+    box-shadow: 00px 00px 8px 4px rgba(0, 0, 0, 0.2);
+}
+
+.center-v {
+    align-content: center;
+    align-items: center;
+}
+
+.center-h {
+    justify-content: center;
+    justify-items: center;
+    justify-self: center;
+}
+
+.center {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.of-hidden {
     overflow: hidden;
 }
 
@@ -121,20 +166,32 @@ textarea {
     border-radius: 0.5em;
 }
 
+.round-corners-s {
+    border-radius: 0.2em;
+}
+
 /*
  * Flex, padding, and margins
  */
 
-.small-pad {
+.pad-s {
     padding: 0.2em;
 }
 
-.big-pad {
+.pad-l {
     padding: 1em;
 }
 
-.flex-col {
+.pad-s-side {
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+}
+
+.display-flex {
     display: flex;
+}
+
+.flex-col {
     flex-direction: column;
 }
 
@@ -147,6 +204,13 @@ textarea {
     flex-direction: row;
 }
 
+.mar-s {
+    margin: 0.2em;
+}
+
+.mar-l {
+    margin: 1.0em;
+}
 
 .space-between {
     justify-content: space-between;
@@ -154,11 +218,6 @@ textarea {
 
 .space-around {
     justify-content: space-around;
-}
-
-.side-pad-1 {
-    padding-left: 0.2em;
-    padding-right: 0.2em;
 }
 
 
@@ -174,11 +233,27 @@ textarea {
     background: #23395b;
 }
 
-
-
 .entry-container {
     flex: 1;
     overflow-y: scroll;
+}
+
+.homepage-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    max-width: 40em;
+    max-height: 40em;
+}
+
+.homepage-container input {
+    font-size: 1.5em;
+}
+
+.floating-window {
+    display: flex;
+    flex-direction: column;
+    height: 25em;
 }
 
 .logbook-entry {
@@ -203,14 +278,13 @@ textarea {
     margin: 0em;
 }
 
-.center {
-    align-content: center;
-    justify-content: center;
-    text-align: center;
-}
-
 .full-width {
     width: 100%;
+    flex: 1;
+}
+
+.full-heigth {
+    height: 100%;
     flex: 1;
 }
 

@@ -5,14 +5,14 @@
 {{ $logbookid := .Logbookid }}
 
 <div class="new-entry-container">
-    <div class="bg-1 white-txt small-pad height-2 center text-title">
+    <div class="bg-1 text-white pad-s height-2 center text-title">
         {{ if $entryid }}
         Update Entry
         {{ else }}
         Create New Entry
         {{ end }}
     </div>
-    <div class="bg-2 big-pad">
+    <div class="bg-2 pad-l">
         <form hx-post="/logbook/{{$logbookid}}/entries" id="new-entry-form">
             <label for="title" class="text-subtitle">Title:</label><br>
             <input class="full-width" type="text" id="title" name="title" {{ if $title }} value="{{$title}}" {{ end }}
@@ -28,7 +28,7 @@
             {{end}}
 
         </form>
-        <div class="flex-row space-around">
+        <div class="flex-row space-around">t
 
             {{ if $entryid }}
             <input type="submit" class="button-width height-2" value="Update"

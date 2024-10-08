@@ -36,14 +36,28 @@ func SetRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /register/validate/first-name", validation.ValidateFirstName)
 	mux.HandleFunc("GET /register/validate/last-name", validation.ValidateLastName)
 
+	mux.HandleFunc("GET /register", Register)
 	mux.HandleFunc("GET /register/user", users.InsertNewUser)
 	mux.HandleFunc("POST /register/user", users.InsertNewUser)
 }
 
+type HomepageData struct {
+	Links map[string]string
+}
+
+func newHomepageData() HomepageData {
+	return HomepageData{
+		Links: make(map[string]string),
+	}
+}
+
 func Index(w http.ResponseWriter, r *http.Request) {
-	log.Info().Msg("Yup, this is the index")
+	data := newHomepageData()
+	data.Links["Register"] = "/register"
+	utils.RenderTemplate(global.AppData, w, "homepage", data)
 }
 
 func Register(w http.ResponseWriter, r *http.Request) {
-	utils.RenderTemplate(global.AppData, w, "register-form", nil)
+	log.Info().Msg("Redirecting to user registration page")
+	http.Redirect(w, r, "/register/user", http.StatusSeeOther)
 }

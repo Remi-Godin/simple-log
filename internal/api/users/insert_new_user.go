@@ -112,6 +112,7 @@ func InsertNewUser(w http.ResponseWriter, r *http.Request) {
 		utils.RenderTemplate(global.AppData, w, "register-form", data)
 	} else {
 		database.New(global.AppData.Conn).InsertNewUser(r.Context(), queryParams)
+		utils.RenderTemplate(global.AppData, w, "success", data)
 	}
 
 }

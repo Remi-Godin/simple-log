@@ -3,7 +3,7 @@
 {{ range .EntryData }}
 <div class="logbook-entry round-corners popup-anim" hx-trigger="click" hx-get="/logbook/1/entries/1/modal/edit"
     hx-target="body" hx-swap="beforeend">
-    <div class="bg-1 white-txt text-subtitle small-pad" id="">
+    <div class="bg-1 text-white text-subtitle pad-s" id="">
         <p>{{ .Title }}</p>
     </div>
     <div class="bg-2 flex-col flex-grow-1">
@@ -11,7 +11,7 @@
             {{ .Description }}
         </article>
     </div>
-    <div class="bg-3 flex-row flex-grow-1 space-between side-pad-1">
+    <div class="bg-3 flex-row flex-grow-1 space-between pad-s-side">
         <p>{{ .Createdon }}</p>
         <p>{{ .Entryid }}</p>
     </div>

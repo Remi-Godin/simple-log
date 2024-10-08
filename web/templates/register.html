@@ -11,10 +11,9 @@
     <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
 </head>
 
-<div id="register-container">
-
-    <div>
-        <form id="register-form" class="bg-2">
+<div id="register-container" class="">
+    <div class="bg-2 pad-l">
+        <form id="register-form" class="">
             <div id="first-name-input">
                 {{ template "register-first-name" .FirstName }}
             </div>
@@ -34,56 +33,66 @@
         </form>
         {{ if .Links.Submit }}
         <input type="submit" class="button-width height-2" value="Submit" hx-post="{{ .Links.Submit }}"
-            hx-include="#register-form">
+            hx-include="#register-form" hx-target="#register-container">
         {{ end }}
     </div>
-
 </div>
 
 </html>
 {{ end }}
 
 {{ block "register-first-name" . }}
-<label for="first-name" class="text-subtitle">First name:</label><br>
-<input class="full-width" type="text" name="first-name" required value="{{ .FieldData }}"
-    hx-get="{{ .Links.ValidateFirstName }}" hx-swap="innerHTML" hx-target="#first-name-input">
-{{ if .Err }}
-<div class="error-message">
-    {{ .Err }}
+<div {{ if .FieldData }}{{ if .Err }} class="error" {{ else }}class="valid" {{end}}{{end}}>
+    <label for="first-name" class="text-subtitle">First name:</label><br>
+    <input class="full-width" type="text" name="first-name" required value="{{ .FieldData }}"
+        hx-get="{{ .Links.ValidateFirstName }}" hx-swap="innerHTML" hx-target="#first-name-input">
+    <div class="text-error">
+        {{ .Err }}
+    </div>
+
 </div>
-{{ end }}
 {{ end }}
 
 {{ block "register-last-name" . }}
-<label for="last-name" class="text-subtitle">Last name:</label><br>
-<input class="full-width" type="text" name="last-name" required value="{{ .FieldData }}"
-    hx-get="{{ .Links.ValidateLastName }}" hx-swap="innerHTML" hx-target="#last-name-input">
-{{ if .Err }}
-<div class="error-message">
-    {{ .Err }}
+<div {{ if .FieldData }}{{ if .Err }} class="error" {{ else }}class="valid" {{end}}{{end}}>
+    <label for="last-name" class="text-subtitle">Last name:</label><br>
+    <input class="full-width" type="text" name="last-name" required value="{{ .FieldData }}"
+        hx-get="{{ .Links.ValidateLastName }}" hx-swap="innerHTML" hx-target="#last-name-input">
+    <div class="text-error">
+        {{ .Err }}
+    </div>
 </div>
-{{ end }}
 {{ end }}
 
 
 {{ block "register-email" . }}
-<label for="email" class="text-subtitle">Email:</label><br>
-<input class="error" type="email" id="email" name="email" required hx-get="{{ .Links.ValidateEmail }}"
-    hx-target="#email-input" hx-swap="innerHTML" value="{{.FieldData}}">
-{{ if .Err }}
-<div class="error-message">
-    {{ .Err }}
+<div {{ if .FieldData }}{{ if .Err }} class="error" {{ else }}class="valid" {{end}}{{end}}>
+    <label for="email" class="text-subtitle">Email:</label><br>
+    <input class="error" type="email" id="email" name="email" required hx-get="{{ .Links.ValidateEmail }}"
+        hx-target="#email-input" hx-swap="innerHTML" value="{{.FieldData}}">
+    <div class="text-error">
+        {{ .Err }}
+    </div>
 </div>
-{{ end }}
 {{ end }}
 
 {{ block "register-password" . }}
-<label for="password" class="text-subtitle">Password:</label><br>
-<input class="full-width" type="password" name="password" required hx-get="{{ .Links.ValidatePassword }}"
-    hx-target="#password-input" hx-swap="innerHTML" value="{{.FieldData}}">
-{{ if .Err }}
-<div class="error-message">
-    {{ .Err }}
+<div {{ if .FieldData }}{{ if .Err }} class="error" {{ else }}class="valid" {{end}}{{end}}>
+    <label for="password" class="text-subtitle">Password:</label><br>
+    <input class="full-width" type="password" name="password" required hx-get="{{ .Links.ValidatePassword }}"
+        hx-target="#password-input" hx-swap="innerHTML" value="{{.FieldData}}">
+    <div class="text-error">
+        {{ .Err }}
+    </div>
 </div>
 {{ end }}
+
+{{ block "success" . }}
+
+<div>
+    <div hx-trigger="load delay:3s" hx-get="/logbook/1"></div>
+    <p>Account created for {{.Email.FieldData}} with success!</p>
+    <p>You will be redirected to SimpleLog shortly.</p>
+</div>
+
 {{ end }}

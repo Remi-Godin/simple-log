@@ -1,3 +1,4 @@
+{{ block "homepage" . }}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,4 +11,33 @@
     <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
 </head>
 
+<div class="display-flex center flex-grow-1">
+    <div class="homepage-container center">
+        <div class="floating-window space-between bg-2 round-corners of-hidden shadow">
+
+            <div class="bg-1 height-6 pad-s center display-flex">
+                <img src="/assets/logo_white.svg" alt="SimpleLog" />
+            </div>
+
+            <form class="floating-window space-around pad-l">
+                <div class="display-flex flex-col">
+                    <label for="username" class="left-align-text text-subtitle">User email:</label>
+                    <input type="text" class="pad-s" name="username">
+                </div>
+                <div class="display-flex flex-col">
+                    <label for="password" class="left-align-text text-subtitle">Password:</label>
+                    <input type="password" class="pad-s" name="password">
+                </div>
+                <input type="button" name="login" value="Login" class="bg-1 text-white round-corners-s">
+                <div class="center">
+                    New to SimpleLog?
+                    <a class="center text-blue" href="{{.Links.Register}}">Create account</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
 </html>
+{{ end }}
