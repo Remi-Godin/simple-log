@@ -5,9 +5,10 @@ import (
 	"net/http"
 	"net/mail"
 
-	"github.com/Remi-Godin/simple-log/internal/database"
 	"github.com/Remi-Godin/simple-log/internal/global"
 	"github.com/Remi-Godin/simple-log/internal/utils"
+	"github.com/Remi-Godin/simple-log/internal/utils/validation"
+	"github.com/Remi-Godin/simple-log/internal/utils/validation/validators"
 	"github.com/rs/zerolog/log"
 )
 
@@ -19,6 +20,8 @@ func ValidateEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	validator := validators.NewEmailValidator()
+
 	data := NewFieldValidationData()
 	data.Links["ValidateEmail"] = fmt.Sprintf("/register/validate/email")
 
@@ -27,12 +30,10 @@ func ValidateEmail(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		data.Err = err.Error()
 	}
+	validator.FieldValue = data.FieldData
+	err = validation.Validate(validator)
 
-	_, err = database.New(global.AppData.Conn).GetUserInfo(r.Context(), data.FieldData)
-	if err == nil {
-		log.Info().Msg("USED")
-		data.Err = "Email address already in use. Please select a different one."
-	}
+	data.Err = "Email address already in use. Please select a different one."
 	utils.RenderTemplate(global.AppData, w, "register-email", data)
 
 }
