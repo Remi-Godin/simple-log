@@ -7,6 +7,11 @@
     padding: 0;
 }
 
+:root {
+    --shadow-green: rgba(0, 150, 0, 0.5);
+    --shadow-red: rgba(150, 0, 0, 0.5);
+}
+
 html,
 body {
     height: 100%;
@@ -418,4 +423,46 @@ input {
     100% {
         transform: scale(0.9);
     }
+}
+
+
+
+/**
+ * validated input field styling
+ */
+
+.validated-input-field {
+    font-family: 'arial';
+    display: flex;
+    flex-direction: column;
+    max-width: 20em;
+}
+
+.validated-input-field input {
+    padding: 0.8em;
+    border-radius: 0.4em;
+    border: 1px grey solid;
+}
+
+.validated-input-field label {
+    font-weight: 700;
+    min-height: 1.5em;
+}
+
+.validated-input-field .error-message {
+    min-height: 2em;
+    color: red;
+    display: flex;
+    align-items: center;
+}
+
+.validated-input-field .valid {
+    border-color: green;
+    box-shadow: 0px 0px 4px 2px var(--shadow-green);
+}
+
+.validated-input-field .invalid {
+    border-color: red;
+    box-shadow: 0px 0px 5px 3px red;
+    box-shadow: 0px 0px 4px 2px var(--shadow-red);
 }

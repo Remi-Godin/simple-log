@@ -67,7 +67,7 @@ func LoadEnvVars() *Env {
 }
 
 func RenderTemplate(appData AppData, w http.ResponseWriter, tmpl_name string, data any) {
-	log.Info().Msg("Rendering template")
+	log.Info().Msg(fmt.Sprintln("Rendering template", tmpl_name))
 	err := appData.Tmpl.ExecuteTemplate(w, tmpl_name, data)
 	if err != nil {
 		log.Error().Err(err).Msg("Could not execute template")

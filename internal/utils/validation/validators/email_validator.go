@@ -4,7 +4,7 @@ import (
 	"github.com/Remi-Godin/simple-log/internal/utils/validation"
 )
 
-type emailValidator struct {
+type EmailValidator struct {
 	Validators    []validation.Validator
 	FieldId       string
 	FieldName     string
@@ -17,20 +17,24 @@ type emailValidator struct {
 	Links         map[string]string
 }
 
-func NewEmailValidator() emailValidator {
+func NewEmailValidator() EmailValidator {
 	var valList []validation.Validator
 	valList = append(valList, validation.NewEmailFormatValidator())
 	valList = append(valList, validation.NewEmailExistValidator())
-	return emailValidator{
-		Validators: valList,
-		Links:      make(map[string]string),
+	return EmailValidator{
+		Validators:    valList,
+		FieldType:     "email",
+		FieldName:     "email",
+		FieldNameText: "Email",
+		FieldId:       "email-input-field",
+		Links:         make(map[string]string),
 	}
 }
 
-func (nv emailValidator) GetValidators() []validation.Validator {
+func (nv EmailValidator) GetValidators() []validation.Validator {
 	return nv.Validators
 }
 
-func (nv emailValidator) GetFieldValue() string {
+func (nv EmailValidator) GetFieldValue() string {
 	return nv.FieldValue
 }

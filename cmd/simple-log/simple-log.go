@@ -47,6 +47,7 @@ func main() {
 	defer conn.Close()
 	log.Info().Msg("Database connection successful!")
 	global.AppData.Conn = conn
+	log.Err(conn.Ping())
 
 	// Parse templates
 	global.AppData.Tmpl = template.Must(template.ParseGlob("./web/templates/*.html"))

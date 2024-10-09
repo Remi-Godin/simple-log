@@ -1,6 +1,7 @@
 package validation
 
 import (
+	"context"
 	"fmt"
 )
 
@@ -16,7 +17,7 @@ func NewTextLengthValidator(minLength int, maxLength int) textLengthValidator {
 	}
 }
 
-func (lv textLengthValidator) Validate(fieldData string) error {
+func (lv textLengthValidator) Validate(ctx context.Context, fieldData string) error {
 	if len(fieldData) < lv.minLength {
 		errMsg := fmt.Sprintf("Field value too short. Please have a minimum of %d characters.", lv.minLength)
 		return ValidationError{errMsg}

@@ -1,11 +1,23 @@
 package validation
 
+import (
+	"context"
+
+	"github.com/rs/zerolog/log"
+)
+
 type Validator interface {
-	Validate(fieldData string) error
+	Validate(ctx context.Context, fieldData string) error
 }
 
 type ValidationError struct {
 	Message string
+}
+
+func NewValidationError(message string) ValidationError {
+	return ValidationError{
+		Message: message,
+	}
 }
 
 func (ve ValidationError) Error() string {
@@ -17,9 +29,11 @@ type ValidatedInputField interface {
 	GetFieldValue() string
 }
 
-func Validate(data ValidatedInputField) error {
+func Validate(ctx context.Context, data ValidatedInputField) error {
+	log.Info().Msg("Validating")
 	for _, val := range data.GetValidators() {
-		err := val.Validate(data.GetFieldValue())
+		log.Info().Msg("Validating")
+		err := val.Validate(ctx, data.GetFieldValue())
 		if err != nil {
 			return err
 		}

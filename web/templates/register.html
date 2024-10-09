@@ -14,22 +14,9 @@
 <div id="register-container" class="">
     <div class="bg-2 pad-l">
         <form id="register-form" class="">
-            <div id="first-name-input">
-                {{ template "register-first-name" .FirstName }}
-            </div>
-            <br>
-            <div id="last-name-input">
-                {{ template "register-last-name" .LastName }}
-            </div>
-            <br>
             <div id="email-input">
-                {{ template "register-email" .Email }}
+                {{ template "validated-input-field" .Email }}
             </div>
-            <br>
-            <div id="password-input">
-                {{ template "register-password" .Password }}
-            </div>
-            <br>
         </form>
         {{ if .Links.Submit }}
         <input type="submit" class="button-width height-2" value="Submit" hx-post="{{ .Links.Submit }}"
@@ -41,40 +28,23 @@
 </html>
 {{ end }}
 
-{{ block "register-first-name" . }}
-<div {{ if .FieldData }}{{ if .Err }} class="error" {{ else }}class="valid" {{end}}{{end}}>
-    <label for="first-name" class="text-subtitle">First name:</label><br>
-    <input class="full-width" type="text" name="first-name" required value="{{ .FieldData }}"
-        hx-get="{{ .Links.ValidateFirstName }}" hx-swap="innerHTML" hx-target="#first-name-input">
-    <div class="text-error">
-        {{ .Err }}
-    </div>
 
-</div>
-{{ end }}
 
-{{ block "register-last-name" . }}
-<div {{ if .FieldData }}{{ if .Err }} class="error" {{ else }}class="valid" {{end}}{{end}}>
-    <label for="last-name" class="text-subtitle">Last name:</label><br>
-    <input class="full-width" type="text" name="last-name" required value="{{ .FieldData }}"
-        hx-get="{{ .Links.ValidateLastName }}" hx-swap="innerHTML" hx-target="#last-name-input">
-    <div class="text-error">
-        {{ .Err }}
+
+{{ block "validated-input-field" . }}
+<div id="{{.FieldId}}" class="validated-input-field">
+    <label for="{{.FieldName}}">{{.FieldNameText}}</label>
+    <input type="{{.FieldType}}" name="{{.FieldName}}" value="{{.FieldValue}}" {{if .Invalid}} class="invalid" {{end}}
+        {{if .Valid}} class="valid" {{end}} hx-get="{{.Links.ValidateField}}" hx-target="#email-input"
+        hx-swap="innerHTML" />
+    <div class="error-message">
+        <p>{{.Err}}</p>
     </div>
 </div>
 {{ end }}
 
 
-{{ block "register-email" . }}
-<div {{ if .FieldData }}{{ if .Err }} class="error" {{ else }}class="valid" {{end}}{{end}}>
-    <label for="email" class="text-subtitle">Email:</label><br>
-    <input class="error" type="email" id="email" name="email" required hx-get="{{ .Links.ValidateEmail }}"
-        hx-target="#email-input" hx-swap="innerHTML" value="{{.FieldData}}">
-    <div class="text-error">
-        {{ .Err }}
-    </div>
-</div>
-{{ end }}
+
 
 {{ block "register-password" . }}
 <div {{ if .FieldData }}{{ if .Err }} class="error" {{ else }}class="valid" {{end}}{{end}}>

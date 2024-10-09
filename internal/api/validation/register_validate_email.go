@@ -3,7 +3,6 @@ package api
 import (
 	"fmt"
 	"net/http"
-	"net/mail"
 
 	"github.com/Remi-Godin/simple-log/internal/global"
 	"github.com/Remi-Godin/simple-log/internal/utils"
@@ -21,19 +20,15 @@ func ValidateEmail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	validator := validators.NewEmailValidator()
-
-	data := NewFieldValidationData()
-	data.Links["ValidateEmail"] = fmt.Sprintf("/register/validate/email")
-
-	data.FieldData = r.FormValue("email")
-	_, err = mail.ParseAddress(data.FieldData)
+	validator.FieldValue = r.FormValue("email")
+	validator.Links["ValidateField"] = fmt.Sprintf("/register/validate/email")
+	validator.FieldValue = r.FormValue("email")
+	err = validation.Validate(r.Context(), validator)
 	if err != nil {
-		data.Err = err.Error()
+		log.Err(err)
+		validator.Err = err.Error()
 	}
-	validator.FieldValue = data.FieldData
-	err = validation.Validate(validator)
 
-	data.Err = "Email address already in use. Please select a different one."
-	utils.RenderTemplate(global.AppData, w, "register-email", data)
+	utils.RenderTemplate(global.AppData, w, "validated-input-field", validator)
 
 }
