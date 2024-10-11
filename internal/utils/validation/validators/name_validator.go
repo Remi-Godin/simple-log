@@ -4,7 +4,7 @@ import (
 	"github.com/Remi-Godin/simple-log/internal/utils/validation"
 )
 
-type nameValidator struct {
+type NameValidator struct {
 	Validators    []validation.Validator
 	FieldId       string
 	FieldName     string
@@ -17,19 +17,20 @@ type nameValidator struct {
 	Links         map[string]string
 }
 
-func NewNameValidator() nameValidator {
+func NewNameValidator() NameValidator {
 	var valList []validation.Validator
 	valList = append(valList, validation.NewTextLengthValidator(2, 32))
-	return nameValidator{
+	return NameValidator{
+		FieldType:  "text",
 		Validators: valList,
 		Links:      make(map[string]string),
 	}
 }
 
-func (nv nameValidator) GetValidators() []validation.Validator {
+func (nv NameValidator) GetValidators() []validation.Validator {
 	return nv.Validators
 }
 
-func (nv nameValidator) GetFieldValue() string {
+func (nv NameValidator) GetFieldValue() string {
 	return nv.FieldValue
 }

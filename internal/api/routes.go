@@ -31,10 +31,10 @@ func SetRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /logbook", logbook.GetLogbooks)
 	mux.HandleFunc("GET /logbook/{logbookId}", logbook.GetLogbook)
 
-	mux.HandleFunc("GET /register/validate/password", validation.ValidatePasswordStrength)
-	mux.HandleFunc("GET /register/validate/email", validation.ValidateEmail)
-	mux.HandleFunc("GET /register/validate/first-name", validation.ValidateFirstName)
-	mux.HandleFunc("GET /register/validate/last-name", validation.ValidateLastName)
+	mux.HandleFunc("GET /validate/password", validation.ValidatePasswordStrength)
+	mux.HandleFunc("GET /validate/email", validation.ValidateEmail)
+	mux.HandleFunc("GET /validate/first-name", validation.ValidateFirstName)
+	mux.HandleFunc("GET /validate/last-name", validation.ValidateLastName)
 
 	mux.HandleFunc("GET /register", Register)
 	mux.HandleFunc("GET /register/user", users.InsertNewUser)

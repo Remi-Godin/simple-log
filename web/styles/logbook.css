@@ -435,7 +435,7 @@ input {
     font-family: 'arial';
     display: flex;
     flex-direction: column;
-    max-width: 20em;
+    max-width: 22em;
 }
 
 .validated-input-field input {
@@ -449,8 +449,10 @@ input {
     min-height: 1.5em;
 }
 
+
 .validated-input-field .error-message {
-    min-height: 2em;
+    min-height: 2.5em;
+    font-size: 0.9em;
     color: red;
     display: flex;
     align-items: center;
