@@ -1,95 +1,77 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/Remi-Godin/simple-log/internal/database"
 	"github.com/Remi-Godin/simple-log/internal/global"
 	"github.com/Remi-Godin/simple-log/internal/utils"
+	"github.com/Remi-Godin/simple-log/internal/utils/validation"
+	"github.com/Remi-Godin/simple-log/internal/utils/validation/validators"
+	"github.com/rs/zerolog/log"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func InsertNewUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		links := make(map[string]string)
-		links["ValidateFirstName"] = "/validate/first-name"
-		links["ValidateLastName"] = "/validate/last-name"
-		links["ValidateEmail"] = "/validate/email"
-		links["ValidatePassword"] = "/validate/password"
-		links["Submit"] = "/register/user"
-		utils.RenderTemplate(global.AppData, w, "register-form", links)
+		links["ValidateFirstName"] = "/field/validated-first-name"
+		links["ValidateLastName"] = "/field/validated-last-name"
+		links["ValidateEmail"] = "/field/validated-email"
+		links["ValidatePassword"] = "/field/validated-password"
+		links["Submit"] = "/register"
+		utils.RenderTemplate(global.AppData, w, "com-form", links)
 		return
 	}
-	/*
-		data := newNewUserData()
-		data.Links["Submit"] = fmt.Sprintf("/register/user")
-		data.Links["ValidatePassword"] = fmt.Sprintf("/validate/password")
-		data.Links["ValidateEmail"] = fmt.Sprintf("/validate/email")
-		data.Links["ValidateFirstName"] = fmt.Sprintf("/validate/first-name")
-		data.Links["ValidateLastName"] = fmt.Sprintf("/validate/last-name")
+	err := r.ParseForm()
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	var validationErrors []string
+	firstName := validators.NewNameValidator()
+	firstName.FieldValue = r.FormValue("first-name")
+	lastName := validators.NewNameValidator()
+	lastName.FieldValue = r.FormValue("last-name")
+	email := validators.NewEmailValidator()
+	email.FieldValue = r.FormValue("email")
+	password := validators.NewPasswordValidator()
+	password.FieldValue = r.FormValue("password")
 
-		data.Email.Links["ValidateEmail"] = fmt.Sprintf("/register/validate/email")
-		data.Email.FieldValue = r.FormValue("email")
-		err := val.Validate(r.Context(), data.Email)
-		log.Info().Msg("IT WORKS THERE TOO")
-		if err != nil {
-			log.Err(err)
-		}
+	if err = validation.Validate(r.Context(), firstName); err != nil {
+		validationErrors = append(validationErrors, fmt.Sprintf("First name: %s", err.Error()))
+	}
+	if err = validation.Validate(r.Context(), lastName); err != nil {
+		validationErrors = append(validationErrors, fmt.Sprintf("Last name: %s", err.Error()))
+	}
+	if err = validation.Validate(r.Context(), email); err != nil {
+		validationErrors = append(validationErrors, fmt.Sprintf("Email: %s", err.Error()))
+	}
+	if err = validation.Validate(r.Context(), password); err != nil {
+		validationErrors = append(validationErrors, fmt.Sprintf("Password: %s", err.Error()))
+	}
 
-		data.Email.Links["ValidateField"] = fmt.Sprintf("/register/validate/email")
+	if len(validationErrors) > 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		utils.RenderTemplate(global.AppData, w, "form-submission-error", validationErrors)
+		return
+	}
 
-		if r.Method == "GET" {
-			utils.RenderTemplate(global.AppData, w, "register-form", data)
-			return
-		}
+	hash, err := bcrypt.GenerateFromPassword([]byte(password.FieldValue), bcrypt.DefaultCost)
 
-		fail := false
-		err = r.ParseForm()
-		if err != nil {
-			log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		queryParams := database.InsertNewUserParams{}
-
-		/*
-				queryParams.Firstname = r.FormValue("first-name")
-				data.FirstName.FieldData = r.FormValue("first-name")
-				if len(queryParams.Firstname) < 2 {
-					log.Error().Msg("First name too short")
-					fail = true
-					data.FirstName.Err = "First name must be longer than 1 character"
-				}
-
-				queryParams.Lastname = r.FormValue("last-name")
-				data.LastName.FieldData = r.FormValue("last-name")
-				if len(queryParams.Lastname) < 2 {
-					log.Error().Msg("Last name too short")
-					fail = true
-					data.LastName.Err = "Last name must be longer than 1 character"
-				}
-			queryParams.Email = r.FormValue("email")
-
-			password := r.FormValue("password")
-			err = passwordValidator.Validate(password, 60)
-			if err != nil {
-				data.Password.Err = err.Error()
-				fail = true
-			}
-
-			hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-			if err != nil {
-				fail = true
-				data.Password.Err = err.Error()
-			} else {
-				queryParams.Passwordhash = string(hash)
-			}
-
-		if fail {
-			w.WriteHeader(http.StatusBadRequest)
-			utils.RenderTemplate(global.AppData, w, "register-form", data)
-		} else {
-			database.New(global.AppData.Conn).InsertNewUser(r.Context(), queryParams)
-			utils.RenderTemplate(global.AppData, w, "success", data)
-		}
-	*/
+	queryParams := database.InsertNewUserParams{
+		Firstname:    firstName.FieldValue,
+		Lastname:     lastName.FieldValue,
+		Email:        email.FieldValue,
+		Passwordhash: string(hash),
+	}
+	_, err = database.New(global.AppData.Conn).InsertNewUser(r.Context(), queryParams)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+	w.Header().Add("HX-Redirect", "/success")
+	w.WriteHeader(http.StatusCreated)
 
 }

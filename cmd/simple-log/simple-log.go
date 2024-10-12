@@ -35,11 +35,12 @@ func main() {
 	log.Info().Msg("Reading env variables...")
 	global.AppData = utils.AppData{}
 	global.AppData.Env = *utils.LoadEnvVars()
+	log.Info().Msg(global.AppData.Env.AuthSecret)
 
 	// Connect to database
 	log.Info().Msg("Initiating database connection...")
 	connectionString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		global.AppData.Env.Db_addr, global.AppData.Env.Db_port, global.AppData.Env.Postgres_user, global.AppData.Env.Postgres_password, global.AppData.Env.Postgres_db)
+		global.AppData.Env.DbAddr, global.AppData.Env.DbPort, global.AppData.Env.PostgresUser, global.AppData.Env.PostgresPassword, global.AppData.Env.PostgresDb)
 	conn, err := sql.Open("postgres", connectionString)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Could not establish database connection")
@@ -57,8 +58,8 @@ func main() {
 	api.SetRoutes(mux)
 
 	// Start server
-	log.Info().Msg("Starting server at: " + global.AppData.Env.Db_addr + ":" + global.AppData.Env.Port)
-	err = http.ListenAndServe(global.AppData.Env.Db_addr+":"+global.AppData.Env.Port, mux)
+	log.Info().Msg("Starting server at: " + global.AppData.Env.DbAddr + ":" + global.AppData.Env.Port)
+	err = http.ListenAndServe(global.AppData.Env.DbAddr+":"+global.AppData.Env.Port, mux)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Server failure")
 	}

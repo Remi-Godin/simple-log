@@ -1,0 +1,6 @@
+{{ block "com-input-field" . }}
+<div id="{{.FieldId}}" class="input-field">
+    <label for="{{.FieldName}}">{{.FieldNameText}}</label>
+    <input type="{{.FieldType}}" name="{{.FieldName}}" value="{{.FieldValue}}" />
+</div>
+{{ end }}

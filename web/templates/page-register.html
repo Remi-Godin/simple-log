@@ -1,0 +1,25 @@
+{{ block "page-register" . }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SimpleLog</title>
+    <link href="/styles/logbook.css" rel="stylesheet" type="text/css">
+    <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/response-targets.js"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+</head>
+
+<div class="floating-zone">
+    <div class="floating-container">
+        <div class="header">
+            <img src="/assets/logo_white.svg" alt="SimpleLog" />
+        </div>
+        <div hx-trigger="load" hx-get="{{.Links.RegisterForm}}" hx-swap="outerHTML"></div>
+    </div>
+</div>
+
+</html>
+{{ end }}

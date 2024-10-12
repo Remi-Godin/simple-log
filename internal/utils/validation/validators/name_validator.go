@@ -11,6 +11,7 @@ type NameValidator struct {
 	FieldType     string
 	FieldNameText string
 	FieldValue    string
+	Required      bool
 	Valid         bool
 	Invalid       bool
 	Err           string
@@ -23,6 +24,7 @@ func NewNameValidator() NameValidator {
 	return NameValidator{
 		FieldType:  "text",
 		Validators: valList,
+		Required:   true,
 		Links:      make(map[string]string),
 	}
 }

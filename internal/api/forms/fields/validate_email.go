@@ -1,4 +1,4 @@
-package api
+package fields
 
 import (
 	"fmt"
@@ -21,7 +21,7 @@ func ValidateEmail(w http.ResponseWriter, r *http.Request) {
 
 	data := validators.NewEmailValidator()
 	data.FieldValue = r.FormValue("email")
-	data.Links["ValidateField"] = fmt.Sprintf("/validate/email")
+	data.Links["ValidateField"] = fmt.Sprintf("/field/validated-email")
 	data.FieldValue = r.FormValue("email")
 	err = validation.Validate(r.Context(), data)
 	if data.FieldValue != "" {
@@ -34,5 +34,5 @@ func ValidateEmail(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	utils.RenderTemplate(global.AppData, w, "validated-input-field", data)
+	utils.RenderTemplate(global.AppData, w, "com-validated-input-field", data)
 }

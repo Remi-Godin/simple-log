@@ -1,0 +1,11 @@
+{{ block "com-validated-input-field" . }}
+<div id="{{.FieldId}}" class="input-field">
+    <label for="{{.FieldName}}">{{.FieldNameText}}{{if .Required}}<span style="color: red;">*</span>{{end}}</label>
+    <input type="{{.FieldType}}" name="{{.FieldName}}" value="{{.FieldValue}}" {{if .Invalid}} class="invalid" {{end}}
+        {{if .Valid}} class="valid" {{end}} hx-get="{{.Links.ValidateField}}" hx-target="#{{.FieldId}}"
+        hx-swap="outerHTML" />
+    <div class="error-message">
+        <p>{{.Err}}</p>
+    </div>
+</div>
+{{ end }}

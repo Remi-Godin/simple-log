@@ -13,12 +13,13 @@ import (
 )
 
 type Env struct {
-	Postgres_user     string
-	Postgres_password string
-	Postgres_db       string
-	Db_addr           string
-	Db_port           string
-	Port              string
+	PostgresUser     string
+	PostgresPassword string
+	PostgresDb       string
+	DbAddr           string
+	DbPort           string
+	Port             string
+	AuthSecret       string
 }
 
 type AppData struct {
@@ -46,28 +47,30 @@ func NewLink(path string, rel string, method string) Link {
 }
 
 func GenerateAppData(conn *sql.DB, tmpl *template.Template) AppData {
-	return AppData{
+	data := AppData{
 		Conn: conn,
 		Tmpl: tmpl,
 		Env:  *LoadEnvVars(),
 	}
+	return data
 }
 
 func LoadEnvVars() *Env {
 	env := Env{}
 
-	env.Postgres_user = os.Getenv("POSTGRES_USER")
-	env.Postgres_password = os.Getenv("POSTGRES_PASSWORD")
-	env.Postgres_db = os.Getenv("POSTGRES_DB")
-	env.Db_addr = os.Getenv("DB_ADDR")
-	env.Db_port = os.Getenv("DB_PORT")
+	env.PostgresUser = os.Getenv("POSTGRES_USER")
+	env.PostgresPassword = os.Getenv("POSTGRES_PASSWORD")
+	env.PostgresDb = os.Getenv("POSTGRES_DB")
+	env.DbAddr = os.Getenv("DB_ADDR")
+	env.DbPort = os.Getenv("DB_PORT")
 	env.Port = os.Getenv("PORT")
+	env.AuthSecret = os.Getenv("SECRET")
 
 	return &env
 }
 
 func RenderTemplate(appData AppData, w http.ResponseWriter, tmpl_name string, data any) {
-	log.Info().Msg(fmt.Sprintln("Rendering template", tmpl_name))
+	log.Info().Msg(fmt.Sprint("Rendering template: ", tmpl_name))
 	err := appData.Tmpl.ExecuteTemplate(w, tmpl_name, data)
 	if err != nil {
 		log.Error().Err(err).Msg("Could not execute template")

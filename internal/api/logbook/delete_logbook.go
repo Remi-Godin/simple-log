@@ -24,8 +24,8 @@ func DeleteLogbook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 	// if deleted, return 200
-	rows_affected, err := result.RowsAffected()
-	if rows_affected > 0 {
+	rowsAffected, err := result.RowsAffected()
+	if rowsAffected > 0 {
 		w.WriteHeader(http.StatusOK)
 		return
 	}

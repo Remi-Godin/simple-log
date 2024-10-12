@@ -1,4 +1,4 @@
-package api
+package fields
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ func ValidatePasswordStrength(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := validators.NewPasswordValidator()
-	data.Links["ValidateField"] = fmt.Sprintf("/validate/password")
+	data.Links["ValidateField"] = fmt.Sprintf("/field/validated-password")
 	data.FieldValue = r.FormValue("password")
 	if data.FieldValue != "" {
 		err = validation.Validate(r.Context(), data)
@@ -32,5 +32,5 @@ func ValidatePasswordStrength(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	utils.RenderTemplate(global.AppData, w, "validated-input-field", data)
+	utils.RenderTemplate(global.AppData, w, "com-validated-input-field", data)
 }

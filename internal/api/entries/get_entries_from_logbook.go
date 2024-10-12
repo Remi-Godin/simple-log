@@ -34,18 +34,18 @@ func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse URL parameters
-	request_params := r.URL.Query()
-	limit_str := request_params.Get("limit")
-	offset_str := request_params.Get("offset")
+	requestParams := r.URL.Query()
+	limitStr := requestParams.Get("limit")
+	offsetStr := requestParams.Get("offset")
 
 	// Get offset and limit from request
-	offset, err := strconv.Atoi(offset_str)
+	offset, err := strconv.Atoi(offsetStr)
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	limit, err := strconv.Atoi(limit_str)
+	limit, err := strconv.Atoi(limitStr)
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
 		w.WriteHeader(http.StatusBadRequest)

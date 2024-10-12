@@ -1,4 +1,4 @@
-package api
+package fields
 
 import (
 	"fmt"
@@ -23,7 +23,7 @@ func ValidateFirstName(w http.ResponseWriter, r *http.Request) {
 	data.FieldName = "first-name"
 	data.FieldId = "first-name"
 	data.FieldNameText = "First name"
-	data.Links["ValidateField"] = fmt.Sprintf("/validate/first-name")
+	data.Links["ValidateField"] = fmt.Sprintf("/field/validated-first-name")
 	data.FieldValue = r.FormValue("first-name")
 	err = validation.Validate(r.Context(), data)
 	if data.FieldValue != "" {
@@ -35,5 +35,5 @@ func ValidateFirstName(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	utils.RenderTemplate(global.AppData, w, "validated-input-field", data)
+	utils.RenderTemplate(global.AppData, w, "com-validated-input-field", data)
 }

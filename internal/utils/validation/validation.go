@@ -2,8 +2,6 @@ package validation
 
 import (
 	"context"
-
-	"github.com/rs/zerolog/log"
 )
 
 type Validator interface {
@@ -30,9 +28,7 @@ type ValidatedInputField interface {
 }
 
 func Validate(ctx context.Context, data ValidatedInputField) error {
-	log.Info().Msg("Validating")
 	for _, val := range data.GetValidators() {
-		log.Info().Msg("Validating")
 		err := val.Validate(ctx, data.GetFieldValue())
 		if err != nil {
 			return err

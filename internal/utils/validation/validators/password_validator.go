@@ -11,6 +11,7 @@ type PasswordValidator struct {
 	FieldType     string
 	FieldNameText string
 	FieldValue    string
+	Required      bool
 	Valid         bool
 	Invalid       bool
 	Err           string
@@ -26,6 +27,7 @@ func NewPasswordValidator() PasswordValidator {
 		FieldName:     "password",
 		FieldNameText: "Password",
 		FieldId:       "password-input-field",
+		Required:      true,
 		Links:         make(map[string]string),
 	}
 }

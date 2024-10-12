@@ -27,8 +27,8 @@ func DeleteEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	rows_affected, err := result.RowsAffected()
-	if rows_affected > 0 {
+	rowsAffected, err := result.RowsAffected()
+	if rowsAffected > 0 {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
