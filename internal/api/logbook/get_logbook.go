@@ -3,48 +3,25 @@ package api
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
-	"github.com/Remi-Godin/simple-log/internal/database"
+	"github.com/Remi-Godin/simple-log/internal/api/pages"
 	"github.com/Remi-Godin/simple-log/internal/global"
 	"github.com/Remi-Godin/simple-log/internal/utils"
 	"github.com/rs/zerolog/log"
 )
 
-type LogbookPageData struct {
-	LogbookId    int
-	LogbookTitle string
-	Links        map[string]string
-}
-
-func newLogbookPageData() LogbookPageData {
-	return LogbookPageData{
-		0,
-		"",
-		make(map[string]string),
-	}
+func LogbookRedirect(w http.ResponseWriter, r *http.Request) {
+	logbookIdStr := r.PathValue("logbookId")
+	logbookUrl := fmt.Sprintf("/logbook/%s", logbookIdStr)
+	log.Info().Msg(fmt.Sprintf("Redirecting to %s", logbookUrl))
+	//http.Redirect(w, r, logbookUrl, http.StatusSeeOther)
+	w.Header().Add("HX-Redirect", logbookUrl)
 }
 
 func GetLogbook(w http.ResponseWriter, r *http.Request) {
-	// Parse URL
-	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
-	if err != nil {
-		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	// Query database
-	logbookData, err := database.New(global.AppData.Conn).GetLogbookData(r.Context(), int32(logbookId))
-	if err != nil {
-		log.Error().Err(err).Msg("Could not complete database query")
-		w.WriteHeader(http.StatusInternalServerError)
-	}
-
-	// Render template
-	data := newLogbookPageData()
-	data.LogbookId = logbookId
-	data.LogbookTitle = logbookData.Title
-	data.Links["Entries"] = fmt.Sprintf("/logbook/%d/entries?limit=%d&offset=%d", logbookId, 5, 0)
-	utils.RenderTemplate(global.AppData, w, "logbook", data)
+	logbookId := r.PathValue("logbookId")
+	data := pages.NewPageData("Logbook")
+	//user := "regodin@proton.me"
+	data.Links["InitialLoad"] = fmt.Sprintf("/data/logbook/%s/entries?limit=5&offset=0", logbookId)
+	utils.RenderTemplate(global.AppData, w, "page-logbook", data)
 }

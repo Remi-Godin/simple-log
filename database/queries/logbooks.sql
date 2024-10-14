@@ -1,10 +1,23 @@
 -- name: GetLogbooksOwnedBy :many
 SELECT 
-LogbookId,
-Title,
-OwnedBy 
-FROM logbooks 
-WHERE OwnedBy=$1;
+l.LogbookId,
+l.Title,
+l.Description,
+l.CreatedOn ,
+u.FirstName,
+u.LastName,
+u.Email
+FROM logbooks l
+INNER JOIN
+users u 
+ON
+l.OwnedBy = u.Email
+WHERE 
+l.OwnedBy=$1
+LIMIT
+$2
+OFFSET
+$3;
 
 -- name: GetLogbooks :many
 SELECT

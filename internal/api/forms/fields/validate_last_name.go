@@ -29,7 +29,7 @@ func ValidateLastName(w http.ResponseWriter, r *http.Request) {
 	if data.FieldValue != "" {
 		if err != nil {
 			data.Err = err.Error()
-			data.Invalid = false
+			data.Invalid = true
 		} else {
 			data.Valid = true
 		}

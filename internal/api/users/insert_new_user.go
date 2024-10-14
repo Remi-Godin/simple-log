@@ -55,7 +55,7 @@ func InsertNewUser(w http.ResponseWriter, r *http.Request) {
 
 	if len(validationErrors) > 0 {
 		w.WriteHeader(http.StatusBadRequest)
-		utils.RenderTemplate(global.AppData, w, "form-submission-error", validationErrors)
+		utils.RenderTemplate(global.AppData, w, "form-submission-error", "Please fill all required fields and fix all issues")
 		return
 	}
 

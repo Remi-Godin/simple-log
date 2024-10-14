@@ -25,8 +25,9 @@ func SetRoutes(mux *http.ServeMux) {
 	// Page redirect handling
 	mux.HandleFunc("/", pages.LoginRedirect)
 	mux.HandleFunc("GET /page/register", pages.RegisterRedirect)
-
 	mux.HandleFunc("GET /page/success", pages.SuccessRedirect)
+
+	// Success
 	mux.HandleFunc("GET /success", pages.Success)
 
 	// Form fields
@@ -49,17 +50,21 @@ func SetRoutes(mux *http.ServeMux) {
 	// SECURE ROUTES
 
 	// Entries
+	mux.Handle("GET /page/logbook/{logbookId}", WithAuth(logbook.LogbookRedirect))
+	mux.Handle("GET /logbook", WithAuth(logbook.Logbooks))
+	mux.Handle("GET /data/logbook/{email}", WithAuth(logbook.GetLogbooksOwnedBy))
 	mux.Handle("GET /logbook/{logbookId}/entries", WithAuth(entries.GetEntriesFromLogbook))
+	mux.Handle("GET /data/logbook/{logbookId}/entries", WithAuth(entries.GetEntriesFromLogbook))
 	mux.Handle("GET /logbook/{logbookId}/entries/{entryId}", WithAuth(entries.GetEntryFromLogbook))
 	mux.Handle("POST /logbook/{logbookId}/entries", WithAuth(entries.InsertNewEntryInLogbook))
 	mux.Handle("DELETE /logbook/{logbookId}/entries/{entryId}", WithAuth(entries.DeleteEntryFromLogbook))
 	mux.Handle("PATCH /logbook/{logbookId}/entries/{entryId}", WithAuth(entries.UpdateEntryFromLogbook))
 
 	// Logbooks
+	mux.Handle("GET /logbook/{logbookId}", WithAuth(logbook.GetLogbook))
 	mux.Handle("DELETE /logbook/{logbookId}", WithAuth(logbook.DeleteLogbook))
 	mux.Handle("POST /logbook", WithAuth(logbook.InsertNewLogbook))
-	mux.Handle("GET /logbook", WithAuth(logbook.GetLogbooks))
-	mux.Handle("GET /logbook/{logbookId}", WithAuth(logbook.GetLogbook))
+	//mux.Handle("GET /logbook", WithAuth(logbook.GetLogbooks))
 
 	// Success
 	mux.Handle("GET /secure/success", WithAuth(pages.Success))
@@ -74,6 +79,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Err(err).Msg("Could not parse login form.")
 		w.WriteHeader(http.StatusBadRequest)
+		utils.RenderTemplate(global.AppData, w, "form-submission-error", "Could not process login information.")
 		return
 	}
 	email := r.FormValue("email")
@@ -84,6 +90,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Error().Err(err).Msg("Could not find user.")
 		w.WriteHeader(http.StatusBadRequest)
+		utils.RenderTemplate(global.AppData, w, "form-submission-error", "This email does not have an account associated with it.")
 		return
 	}
 
@@ -93,16 +100,17 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		log.Error().Err(err).Msg("Wrong password")
 		w.WriteHeader(http.StatusForbidden)
 		// TODO
-		utils.RenderTemplate(global.AppData, w, "form-error", nil)
+		utils.RenderTemplate(global.AppData, w, "form-submission-error", "Wrong password.")
 		return
 	}
 
 	// Create new authentication token
-	jwtHandler := auth.NewSimpleJwtHandler(global.AppData.Env.AuthSecret, time.Minute)
+	jwtHandler := auth.NewSimpleJwtHandler(global.AppData.Env.AuthSecret, time.Minute*60)
 	token, err := jwtHandler.GenerateToken(email)
 	if err != nil {
 		log.Error().Err(err).Msg("Could not generate token")
 		w.WriteHeader(http.StatusInternalServerError)
+		utils.RenderTemplate(global.AppData, w, "form-submission-error", "The server encountered an error.")
 		return
 	}
 
@@ -113,7 +121,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	log.Info().Msg("I'm gonna redirect now, watch this!")
 
 	// Redirect to success page (temporary)
-	w.Header().Add("HX-Redirect", "/secure/success")
+	w.Header().Add("HX-Redirect", "/logbook")
 }
 
 // Wrapper function to add Auth middleware to routes

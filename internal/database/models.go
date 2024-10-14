@@ -18,9 +18,11 @@ type Entry struct {
 }
 
 type Logbook struct {
-	Logbookid int32
-	Title     string
-	Ownedby   string
+	Logbookid   int32
+	Title       string
+	Description string
+	Createdon   time.Time
+	Ownedby     string
 }
 
 type User struct {

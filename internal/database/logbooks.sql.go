@@ -8,6 +8,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const deleteLogbook = `-- name: DeleteLogbook :execresult
@@ -27,9 +28,15 @@ FROM logbooks
 WHERE LogbookId = $1
 `
 
-func (q *Queries) GetLogbookData(ctx context.Context, logbookid int32) (Logbook, error) {
+type GetLogbookDataRow struct {
+	Logbookid int32
+	Title     string
+	Ownedby   string
+}
+
+func (q *Queries) GetLogbookData(ctx context.Context, logbookid int32) (GetLogbookDataRow, error) {
 	row := q.db.QueryRowContext(ctx, getLogbookData, logbookid)
-	var i Logbook
+	var i GetLogbookDataRow
 	err := row.Scan(&i.Logbookid, &i.Title, &i.Ownedby)
 	return i, err
 }
@@ -49,15 +56,21 @@ type GetLogbooksParams struct {
 	Offset int32
 }
 
-func (q *Queries) GetLogbooks(ctx context.Context, arg GetLogbooksParams) ([]Logbook, error) {
+type GetLogbooksRow struct {
+	Logbookid int32
+	Title     string
+	Ownedby   string
+}
+
+func (q *Queries) GetLogbooks(ctx context.Context, arg GetLogbooksParams) ([]GetLogbooksRow, error) {
 	rows, err := q.db.QueryContext(ctx, getLogbooks, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Logbook
+	var items []GetLogbooksRow
 	for rows.Next() {
-		var i Logbook
+		var i GetLogbooksRow
 		if err := rows.Scan(&i.Logbookid, &i.Title, &i.Ownedby); err != nil {
 			return nil, err
 		}
@@ -74,23 +87,60 @@ func (q *Queries) GetLogbooks(ctx context.Context, arg GetLogbooksParams) ([]Log
 
 const getLogbooksOwnedBy = `-- name: GetLogbooksOwnedBy :many
 SELECT 
-LogbookId,
-Title,
-OwnedBy 
-FROM logbooks 
-WHERE OwnedBy=$1
+l.LogbookId,
+l.Title,
+l.Description,
+l.CreatedOn ,
+u.FirstName,
+u.LastName,
+u.Email
+FROM logbooks l
+INNER JOIN
+users u 
+ON
+l.OwnedBy = u.Email
+WHERE 
+l.OwnedBy=$1
+LIMIT
+$2
+OFFSET
+$3
 `
 
-func (q *Queries) GetLogbooksOwnedBy(ctx context.Context, ownedby string) ([]Logbook, error) {
-	rows, err := q.db.QueryContext(ctx, getLogbooksOwnedBy, ownedby)
+type GetLogbooksOwnedByParams struct {
+	Ownedby string
+	Limit   int32
+	Offset  int32
+}
+
+type GetLogbooksOwnedByRow struct {
+	Logbookid   int32
+	Title       string
+	Description string
+	Createdon   time.Time
+	Firstname   string
+	Lastname    string
+	Email       string
+}
+
+func (q *Queries) GetLogbooksOwnedBy(ctx context.Context, arg GetLogbooksOwnedByParams) ([]GetLogbooksOwnedByRow, error) {
+	rows, err := q.db.QueryContext(ctx, getLogbooksOwnedBy, arg.Ownedby, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Logbook
+	var items []GetLogbooksOwnedByRow
 	for rows.Next() {
-		var i Logbook
-		if err := rows.Scan(&i.Logbookid, &i.Title, &i.Ownedby); err != nil {
+		var i GetLogbooksOwnedByRow
+		if err := rows.Scan(
+			&i.Logbookid,
+			&i.Title,
+			&i.Description,
+			&i.Createdon,
+			&i.Firstname,
+			&i.Lastname,
+			&i.Email,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

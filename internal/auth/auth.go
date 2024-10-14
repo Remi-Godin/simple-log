@@ -7,7 +7,8 @@ import (
 
 func AuthMiddleware(next http.Handler, secret string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !ValidateRequest(r, NewSimpleJwtHandler(secret, time.Minute*1)) {
+		// Need to find a way to reuse the validator. time.Minute is not needed here since we are not giving a new token
+		if !ValidateRequest(r, NewSimpleJwtHandler(secret, time.Minute)) {
 			// If auth token not found or invalid, redirect to login screen
 			//w.Header().Add("HX-Redirect", "/login")
 			http.Redirect(w, r, "/login", http.StatusSeeOther)

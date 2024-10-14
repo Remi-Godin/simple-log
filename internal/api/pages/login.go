@@ -14,7 +14,7 @@ func LoginRedirect(w http.ResponseWriter, r *http.Request) {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	data := newPageData("login")
+	data := NewPageData("login")
 	data.Links["LoginForm"] = "/form/login"
 	data.Links["Register"] = "/page/register"
 	utils.RenderTemplate(global.AppData, w, "page-login", data)

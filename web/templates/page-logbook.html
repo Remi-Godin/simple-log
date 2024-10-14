@@ -1,31 +1,48 @@
-{{ block "logbook" . }}
+{{ block "page-logbook" . }}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Logbook</title>
+    <title>logbook</title>
     <link href="/styles/logbook.css" rel="stylesheet" type="text/css">
     <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/response-targets.js"></script>
     <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
 </head>
 
 <body>
-    <header>{{ template "com-logbook-header" . }}</header>
-    <main hx-trigger="load" hx-target="#entry-container" hx-swap="innerHTML" hx-get="{{.Links.Entries}}">
-        <div class="entry-container">
 
-            <div id="entry-container"></div>
+    <div class="logbook-container">
+
+        <header class="logbook-header">
+            <img src="/assets/logo_white.svg" alt="SimpleLog" />
+        </header>
+        <div class="logbook-title center flex-column">
+            <h1>{{.Data.LogbookTitle}}</h1>
+        </div>
+        <div class="logbook-nav">
 
         </div>
-    </main>
-    <footer class="center">
-        <a class="text-white"
-            href="https://github.com/Remi-Godin/simple-log">https://github.com/Remi-Godin/simple-log</a>
-    </footer>
+        <div class="logbook-content">
+            <div class="logbook-menu">
+                MENU GOES HERE
+            </div>
+            <div id="main-container" class="logbook-entries-container shadow-inset">
+
+                <div hx-get="{{.Links.InitialLoad}}" hx-trigger="load" hx-swap="innerHTML" hx-target="#main-container">
+                </div>
+
+            </div>
+        </div>
+        <footer class="logbook-footer">
+            This is the footer
+        </footer>
+
+    </div>
+
 </body>
 
 </html>
-
 {{ end }}

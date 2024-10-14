@@ -12,33 +12,33 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type EntriesData struct {
-	EntryData []database.Entry
-	Links     map[string]string
+type MultipleEntryData struct {
+	Entries []database.Entry
+	Links   map[string]string
 }
 
-func newEntriesData() EntriesData {
-	return EntriesData{
+func newMultipleEntryData() MultipleEntryData {
+	return MultipleEntryData{
 		Links: make(map[string]string),
 	}
 }
 
 func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
 	// Parse logbook ID from URL
-	log.Info().Msg("Getting entries from logbook")
-	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
-	if err != nil {
-		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	// TODO: Get email from JWT user
 
-	// Parse URL parameters
+	logbookIdStr := r.PathValue("logbookId")
 	requestParams := r.URL.Query()
 	limitStr := requestParams.Get("limit")
 	offsetStr := requestParams.Get("offset")
 
 	// Get offset and limit from request
+	logbookId, err := strconv.Atoi(logbookIdStr)
+	if err != nil {
+		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	offset, err := strconv.Atoi(offsetStr)
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
@@ -52,28 +52,24 @@ func GetEntriesFromLogbook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Set query parameters
 	queryParams := database.GetEntriesFromLogbookParams{
 		Logbookid: int32(logbookId),
 		Limit:     int32(limit),
 		Offset:    int32(offset),
 	}
 
-	// Run query
 	entries, err := database.New(global.AppData.Conn).GetEntriesFromLogbook(r.Context(), queryParams)
 	if err != nil {
-		log.Error().Err(err).Msg("Could not complete database query")
+		log.Error().Err(err).Msg("Query failure")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	data := newEntriesData()
-	data.EntryData = entries
+	data := newMultipleEntryData()
+	data.Entries = entries
 	if len(entries) == limit {
-		data.Links["Entries"] = fmt.Sprintf("/logbook/%d/entries?limit=%d&offset=%d", logbookId, limit, offset+limit)
+		data.Links["LoadMore"] = fmt.Sprintf("/data/logbook/%d/entries?limit=%d&offset=%d", logbookId, limit, offset+limit)
 	}
 
-	// Render the html
 	utils.RenderTemplate(global.AppData, w, "com-logbook-entry", data)
-
 }

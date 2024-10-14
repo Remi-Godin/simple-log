@@ -12,7 +12,7 @@
         {{ end }}
         {{ if .FormSubmissionLink }}
         <input type="submit" class="button-width height-2" value="Submit" hx-post="{{ .FormSubmissionLink }}"
-            hx-include="#form" hx-swap="outerHTML" hx-target-error="#form-errors">
+            hx-include="#form" hx-swap="innerHTML" hx-target-error="#form-errors">
 
         {{ end }}
         <div id="form-errors" class="form-submission-message">
@@ -24,7 +24,7 @@
 {{ block "form-submission-error" . }}
 <div class="form-submission-message">
     <p class="error-message">
-        Please fill all required fields and fix all errors before submitting.
+        {{ . }}
     </p>
 </div>
 {{ end }}

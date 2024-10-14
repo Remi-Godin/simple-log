@@ -14,7 +14,7 @@ func RegisterRedirect(w http.ResponseWriter, r *http.Request) {
 }
 
 func Register(w http.ResponseWriter, r *http.Request) {
-	data := newPageData("register")
+	data := NewPageData("register")
 	data.Links["RegisterForm"] = "/form/register"
 	utils.RenderTemplate(global.AppData, w, "page-register", data)
 }
