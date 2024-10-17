@@ -23,6 +23,7 @@ func NewEntry(w http.ResponseWriter, r *http.Request) {
 	data.FormFields = append(data.FormFields, "/field/description")
 
 	utils.RenderTemplate(global.AppData, w, "com-form", data)
+	w.WriteHeader(http.StatusCreated)
 }
 
 func EditEntry(w http.ResponseWriter, r *http.Request) {

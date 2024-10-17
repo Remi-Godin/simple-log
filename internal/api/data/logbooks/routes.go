@@ -9,5 +9,6 @@ import (
 func LoadLogbooksRoutes(mux *http.ServeMux) *http.ServeMux {
 	mux.Handle("DELETE /logbook/{logbookId}", auth.WithAuth(DeleteLogbook))
 	mux.Handle("GET /logbooks", auth.WithAuth(GetLogbooksOwnedBy))
+	mux.Handle("POST /logbook", auth.WithAuth(InsertLogbook))
 	return mux
 }

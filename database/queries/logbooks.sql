@@ -37,8 +37,8 @@ FROM logbooks
 WHERE LogbookId = $1;
 
 -- name: InsertNewLogbook :execresult
-INSERT INTO logbooks(Title,OwnedBy) VALUES
-($1,$2);
+INSERT INTO logbooks(Title,Description,OwnedBy) VALUES
+($1,$2,$3);
 
 -- name: DeleteLogbook :execresult
 DELETE FROM logbooks WHERE LogbookId=$1;

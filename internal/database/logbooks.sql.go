@@ -155,15 +155,16 @@ func (q *Queries) GetLogbooksOwnedBy(ctx context.Context, arg GetLogbooksOwnedBy
 }
 
 const insertNewLogbook = `-- name: InsertNewLogbook :execresult
-INSERT INTO logbooks(Title,OwnedBy) VALUES
-($1,$2)
+INSERT INTO logbooks(Title,Description,OwnedBy) VALUES
+($1,$2,$3)
 `
 
 type InsertNewLogbookParams struct {
-	Title   string
-	Ownedby string
+	Title       string
+	Description string
+	Ownedby     string
 }
 
 func (q *Queries) InsertNewLogbook(ctx context.Context, arg InsertNewLogbookParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, insertNewLogbook, arg.Title, arg.Ownedby)
+	return q.db.ExecContext(ctx, insertNewLogbook, arg.Title, arg.Description, arg.Ownedby)
 }
