@@ -13,7 +13,7 @@ import (
 func GetEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
 	logbookId, entryId, err := utils.ExtractIdsFromRoute(r)
 	if err != nil {
-		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		log.Error().Err(err).Msg("Could not extract IDs")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

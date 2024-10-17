@@ -1,7 +1,8 @@
 {{ block "com-logbook-entry" . }}
 
 {{ range .Entries }}
-<div class="logbook-entry-card highlight-anim shadow">
+<div class="logbook-entry-card highlight-anim shadow" hx-trigger="click"
+    hx-get="/logbook/{{.Logbookid}}/entries/{{.Entryid}}">
     <div class="header" id="">
         <h1>{{ .Title }}</h1>
     </div>

@@ -10,7 +10,6 @@ import (
 
 func Logbooks(w http.ResponseWriter, r *http.Request) {
 	data := NewPageData("Logbook")
-	user := "regodin@proton.me"
-	data.Links["InitialLoad"] = fmt.Sprintf("/data/logbook/%s?limit=5&offset=0", user)
+	data.Links["InitialLoad"] = fmt.Sprintf("/logbooks?limit=5&offset=0")
 	utils.RenderTemplate(global.AppData, w, "page-logbook", data)
 }

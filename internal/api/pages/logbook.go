@@ -19,7 +19,7 @@ func LogbookRedirect(w http.ResponseWriter, r *http.Request) {
 func Logbook(w http.ResponseWriter, r *http.Request) {
 	logbookId := r.PathValue("logbookId")
 	data := NewPageData("Logbook")
-	data.Links["InitialLoad"] = fmt.Sprintf("/data/logbook/%s/entries?limit=5&offset=0", logbookId)
+	data.Links["InitialLoad"] = fmt.Sprintf("/logbook/%s/entries?limit=5&offset=0", logbookId)
 	data.Data["LogbookTitle"] = "This is my logbook"
 	data.Data["LogbookDescription"] = "This is my logbook description"
 	utils.RenderTemplate(global.AppData, w, "page-logbook", data)
