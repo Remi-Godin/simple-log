@@ -23,5 +23,7 @@ func GetLogbook(w http.ResponseWriter, r *http.Request) {
 	data := pages.NewPageData("Logbook")
 	//user := "regodin@proton.me"
 	data.Links["InitialLoad"] = fmt.Sprintf("/data/logbook/%s/entries?limit=5&offset=0", logbookId)
+	data.Data["LogbookTitle"] = "This is my logbook"
+	data.Data["LogbookDescription"] = "This is my logbook description"
 	utils.RenderTemplate(global.AppData, w, "page-logbook", data)
 }

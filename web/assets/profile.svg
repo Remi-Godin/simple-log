@@ -1,5 +1,61 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   width="7.8669829mm"
+   height="9.8337288mm"
+   viewBox="0 0 0.89200431 1.1150055"
+   fill="none"
+   version="1.1"
+   id="svg6"
+   sodipodi:docname="profile.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs10" />
+  <sodipodi:namedview
+     id="namedview8"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="10.65"
+     inkscape:cx="5.0234742"
+     inkscape:cy="36.619718"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     inkscape:window-x="0"
+     inkscape:window-y="1096"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg6"
+     units="mm"
+     height="10mm"
+     inkscape:document-units="mm" />
+  <g
+     id="g829"
+     transform="matrix(-0.05575027,0,0,0.05575027,1.1150054,-0.11150054)"
+     style="stroke:#ffffff">
+    <path
+       d="m 16,7 c 0,2.20914 -1.7909,4 -4,4 C 9.79086,11 8,9.20914 8,7 8,4.79086 9.79086,3 12,3 c 2.2091,0 4,1.79086 4,4 z"
+       stroke="#000000"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="path2"
+       style="stroke:#ffffff" />
+    <path
+       d="m 12,14 c -3.86599,0 -7,3.134 -7,7 h 14 c 0,-3.866 -3.134,-7 -7,-7 z"
+       stroke="#000000"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="path4"
+       style="stroke:#ffffff" />
+  </g>
 </svg>

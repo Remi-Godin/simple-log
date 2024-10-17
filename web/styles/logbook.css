@@ -94,6 +94,10 @@ h2 {
     font-family: arial;
 }
 
+h3 {
+    font-family: arial;
+}
+
 .error input {
     box-shadow: 0 0 3px #CC0000;
 }
@@ -198,7 +202,11 @@ h2 {
 }
 
 .popup-anim:hover {
-    transform: scale(1.008);
+    transform: scale(1.1);
+}
+
+.highlight-anim:hover {
+    box-shadow: 0px 0px 8px 4px var(--highlight-1-1);
 }
 
 .new-entry-container {
@@ -518,6 +526,11 @@ input[type="submit"]:active {
 .logbook-title {
     grid-area: t;
     background: var(--bg-1);
+    color: var(--txt-1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .logbook-footer {
@@ -528,6 +541,15 @@ input[type="submit"]:active {
 .logbook-nav {
     grid-area: n;
     background: var(--bg-1);
+    display: flex;
+    flex-direction: row;
+    padding: 1em;
+    justify-content: right;
+}
+
+.logbook-nav img {
+    max-height: 2.6rem;
+    margin-left: 1.0rem;
 }
 
 .logbook-card {
@@ -535,15 +557,15 @@ input[type="submit"]:active {
     flex-direction: column;
     background: var(--bg-2);
     margin: 1em;
-    border-top-left-radius: 10em;
-    border-bottom-left-radius: 10em;
+    border-top-left-radius: 4em;
+    border-bottom-left-radius: 4em;
 }
 
 .logbook-card-container {
     display: flex;
     flex-direction: row;
-    border-top-left-radius: 10em;
-    border-bottom-left-radius: 10em;
+    border-top-left-radius: 3.5em;
+    border-bottom-left-radius: 3.5em;
 }
 
 

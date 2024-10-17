@@ -1,8 +1,8 @@
 {{ block "com-logbook" . }}
 {{ range .Logbooks }}
 
-<div class="logbook-card shadow" hx-get="/page/logbook/{{ .Logbookid }}" hx-trigger="click" hx-target="#main-container"
-    hx-swap="innerHTML">
+<div class="logbook-card highlight-anim shadow" hx-get="/page/logbook/{{ .Logbookid }}" hx-trigger="click"
+    hx-target="#main-container" hx-swap="innerHTML">
     <div class="logbook-card-container">
 
         <div class="center-content">
