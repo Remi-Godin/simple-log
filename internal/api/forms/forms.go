@@ -5,6 +5,7 @@ type FormData struct {
 	FormDesc           string
 	FormFields         []string
 	FormSubmissionLink string
+	Patch              bool
 }
 
 func NewFormData(formName string) FormData {

@@ -24,7 +24,7 @@
             <h3>{{.Data.LogbookDescription}}</h3>
         </div>
         <div class="logbook-nav">
-            <img title="Add" src="/assets/add_button.svg" alt="Add" class="popup-anim" />
+            <img title="Add" src="/assets/add_button.svg" alt="Add" class="popup-anim" hx-get="{{.Links.Create}}" />
             <img title="User Settings" src="/assets/profile.svg" alt="User Settings" class="popup-anim" />
             <img title="Logout" src="/assets/logout.svg" alt="Logout" class="popup-anim" />
         </div>

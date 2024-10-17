@@ -22,5 +22,6 @@ func Logbook(w http.ResponseWriter, r *http.Request) {
 	data.Links["InitialLoad"] = fmt.Sprintf("/logbook/%s/entries?limit=5&offset=0", logbookId)
 	data.Data["LogbookTitle"] = "This is my logbook"
 	data.Data["LogbookDescription"] = "This is my logbook description"
+	data.Links["Create"] = "/form/entry"
 	utils.RenderTemplate(global.AppData, w, "page-logbook", data)
 }

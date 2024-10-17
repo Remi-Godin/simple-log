@@ -11,8 +11,9 @@
         <div hx-swap="outerHTML" hx-trigger="load" hx-get="{{.}}"></div>
         {{ end }}
         {{ if .FormSubmissionLink }}
-        <input type="submit" class="button-width height-2" value="Submit" hx-post="{{ .FormSubmissionLink }}"
-            hx-include="#form" hx-swap="innerHTML" hx-target-error="#form-errors">
+        <input type="submit" class="button-width height-2" value="Submit"
+            {{if.Patch}}hx-patch{{else}}hx-post{{end}}="{{ .FormSubmissionLink }}" hx-include="#form"
+            hx-swap="innerHTML" hx-target-error="#form-errors">
 
         {{ end }}
         <div id="form-errors" class="form-submission-message">

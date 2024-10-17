@@ -25,7 +25,7 @@ func UpdateEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	description := r.FormValue("description")
 	if title == "" || description == "" {
-		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		log.Error().Err(err).Msg("Could not parse entry data")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
