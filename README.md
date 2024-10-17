@@ -14,9 +14,9 @@ https://github.com/user-attachments/assets/ca942b87-f973-4679-9da3-1b5b65ceb1c8
 - [x] Handle a single logbook
 - [x] Able to create,read,update, and delete entries
 - [x] Infinite scrolling for loading older entries seamlessly
-- [ ] Create logbook select page
-- [ ] Handle multiple users
-- [ ] Implement authentication system
+- [x] Create logbook select page
+- [x] Implement authentication system
+- [x] Handle multiple users
 - [ ] Implement permission system for multi-user logbooks
 - [ ] Add more metadata to logbook entries
 - [ ] Entry search and filtering
