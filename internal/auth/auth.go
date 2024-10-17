@@ -3,6 +3,8 @@ package auth
 import (
 	"net/http"
 	"time"
+
+	"github.com/Remi-Godin/simple-log/internal/global"
 )
 
 func AuthMiddleware(next http.Handler, secret string) http.Handler {
@@ -16,6 +18,11 @@ func AuthMiddleware(next http.Handler, secret string) http.Handler {
 		}
 		next.ServeHTTP(w, r)
 	})
+}
+
+// Wrapper function to add Auth middleware to routes
+func WithAuth(handleFunc http.HandlerFunc) http.Handler {
+	return AuthMiddleware(handleFunc, global.AppData.Env.AuthSecret)
 }
 
 type JwtAuthTokenHandler interface {

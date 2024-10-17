@@ -1,4 +1,4 @@
-package api
+package users
 
 import (
 	"fmt"
@@ -14,16 +14,6 @@ import (
 )
 
 func InsertNewUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		links := make(map[string]string)
-		links["ValidateFirstName"] = "/field/validated-first-name"
-		links["ValidateLastName"] = "/field/validated-last-name"
-		links["ValidateEmail"] = "/field/validated-email"
-		links["ValidatePassword"] = "/field/validated-password"
-		links["Submit"] = "/register"
-		utils.RenderTemplate(global.AppData, w, "com-form", links)
-		return
-	}
 	err := r.ParseForm()
 	if err != nil {
 		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")

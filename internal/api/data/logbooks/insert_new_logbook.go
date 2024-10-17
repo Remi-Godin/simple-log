@@ -1,4 +1,4 @@
-package api
+package logbooks
 
 import (
 	"encoding/json"
