@@ -80,12 +80,12 @@ func RenderTemplate(appData AppData, w http.ResponseWriter, tmpl_name string, da
 func ExtractIdsFromRoute(r *http.Request) (logbookId int, entryId int, err error) {
 	logbookId, err = strconv.Atoi(r.PathValue("logbookId"))
 	if err != nil {
-		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		log.Error().Err(err).Msg("Could not extract logbook ID from path")
 		return 0, 0, err
 	}
 	entryId, err = strconv.Atoi(r.PathValue("entryId"))
 	if err != nil {
-		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		log.Error().Err(err).Msg("Could not extract entry ID from path")
 		return 0, 0, err
 	}
 	return logbookId, entryId, nil

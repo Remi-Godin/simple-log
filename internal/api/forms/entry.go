@@ -12,6 +12,17 @@ import (
 )
 
 func NewEntry(w http.ResponseWriter, r *http.Request) {
+	logbookId := r.PathValue("logbookId")
+	log.Warn().Msg(logbookId)
+
+	data := NewFormData("Create Entry")
+	data.FormDesc = "Enter entry details."
+
+	data.FormSubmissionLink = fmt.Sprintf("/logbook/%s/entries", logbookId)
+	data.FormFields = append(data.FormFields, "/field/title")
+	data.FormFields = append(data.FormFields, "/field/description")
+
+	utils.RenderTemplate(global.AppData, w, "com-form", data)
 }
 
 func EditEntry(w http.ResponseWriter, r *http.Request) {

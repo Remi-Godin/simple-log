@@ -2,7 +2,7 @@
 
 {{ range .Entries }}
 <div class="logbook-entry-card highlight-anim shadow" hx-trigger="click"
-    hx-get="/form/logbook/{{.Logbookid}}/entries/{{.Entryid}}" hx-swap="outerHTML">
+    hx-get="/form/logbook/{{.Logbookid}}/entries/{{.Entryid}}" hx-swap="innerHTML">
     <div class="header" id="">
         <h1>{{ .Title }}</h1>
     </div>

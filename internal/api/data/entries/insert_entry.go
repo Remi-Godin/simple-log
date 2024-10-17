@@ -12,14 +12,14 @@ import (
 func InsertNewEntryInLogbook(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		log.Error().Err(err).Msg("Could not parse new entry form")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	title := r.FormValue("title")
 	description := r.FormValue("description")
 	if title == "" || description == "" {
-		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		log.Error().Err(err).Msg("Could not parse title and description")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -29,7 +29,7 @@ func InsertNewEntryInLogbook(w http.ResponseWriter, r *http.Request) {
 	log.Info().Msg(title + ": " + description)
 	logbookId, err := strconv.Atoi(r.PathValue("logbookId"))
 	if err != nil {
-		log.Error().Err(err).Msg("Attempted to use API with erroneous parameters")
+		log.Error().Err(err).Msg("Could not get logbook ID from path")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
