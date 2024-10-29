@@ -560,7 +560,15 @@ input[type="submit"].delete:active {
 }
 
 .logbook-footer {
+    width: 100%;
     grid-area: f;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-0);
+}
+
+.logbook-footer p {
+    color: white;
     background: var(--bg-0);
 }
 
