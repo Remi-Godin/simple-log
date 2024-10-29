@@ -3,7 +3,9 @@ package pages
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
+	"github.com/Remi-Godin/simple-log/internal/database"
 	"github.com/Remi-Godin/simple-log/internal/global"
 	"github.com/Remi-Godin/simple-log/internal/utils"
 	"github.com/rs/zerolog/log"
@@ -17,12 +19,22 @@ func LogbookRedirect(w http.ResponseWriter, r *http.Request) {
 }
 
 func Logbook(w http.ResponseWriter, r *http.Request) {
-	logbookId := r.PathValue("logbookId")
+	logbookIdStr := r.PathValue("logbookId")
+	logbookId, err := strconv.Atoi(logbookIdStr)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	logbookData, err := database.New(global.AppData.Conn).GetLogbookData(r.Context(), int32(logbookId))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	data := NewPageData("Logbook")
-	data.Links["InitialLoad"] = fmt.Sprintf("/logbook/%s/entries?limit=5&offset=0", logbookId)
-	data.Data["LogbookTitle"] = "This is my logbook"
-	data.Data["LogbookDescription"] = "This is my logbook description"
-	data.Links["Create"] = fmt.Sprintf("/form/logbook/%s/entries", logbookId)
-	data.Links["DeleteLogbook"] = fmt.Sprintf("/logbook/%s", logbookId)
+	data.Links["InitialLoad"] = fmt.Sprintf("/logbook/%d/entries?limit=5&offset=0", logbookId)
+	data.Data["LogbookTitle"] = logbookData.Title
+	data.Data["LogbookDescription"] = logbookData.Description
+	data.Links["Create"] = fmt.Sprintf("/form/logbook/%d/entries", logbookId)
+	data.Links["DeleteLogbook"] = fmt.Sprintf("/logbook/%d", logbookId)
 	utils.RenderTemplate(global.AppData, w, "page-logbook", data)
 }

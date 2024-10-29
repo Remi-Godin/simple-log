@@ -23,21 +23,28 @@ const getLogbookData = `-- name: GetLogbookData :one
 SELECT
 LogbookId,
 Title,
+Description,
 OwnedBy
 FROM logbooks
 WHERE LogbookId = $1
 `
 
 type GetLogbookDataRow struct {
-	Logbookid int32
-	Title     string
-	Ownedby   string
+	Logbookid   int32
+	Title       string
+	Description string
+	Ownedby     string
 }
 
 func (q *Queries) GetLogbookData(ctx context.Context, logbookid int32) (GetLogbookDataRow, error) {
 	row := q.db.QueryRowContext(ctx, getLogbookData, logbookid)
 	var i GetLogbookDataRow
-	err := row.Scan(&i.Logbookid, &i.Title, &i.Ownedby)
+	err := row.Scan(
+		&i.Logbookid,
+		&i.Title,
+		&i.Description,
+		&i.Ownedby,
+	)
 	return i, err
 }
 

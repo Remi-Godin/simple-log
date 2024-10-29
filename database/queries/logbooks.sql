@@ -28,6 +28,7 @@ OFFSET $2;
 SELECT
 LogbookId,
 Title,
+Description,
 OwnedBy
 FROM logbooks
 WHERE LogbookId = $1;
