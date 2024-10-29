@@ -1,16 +1,10 @@
-{{ block "modal" .}}
-{{ $entryid := .Entryid }}
-{{ $title := .Title }}
-{{ $description := .Description }}
-{{ $logbookid := .Logbookid }}
-
+{{ block "com-modal" .}}
 <div id="modal" _="on closeModal add .closing then wait for animationend then remove me">
-    <div class="modal-underlay" _="on click trigger closeModal"></div>
+    <div class="modal-underlay" _="on click trigger closeModal">Close</div>
     <div class="modal-content">
 
-        {{ template "com-new-entry" . }}
+        {{ template "com-form" . }}
 
     </div>
 </div>
-
 {{ end }}

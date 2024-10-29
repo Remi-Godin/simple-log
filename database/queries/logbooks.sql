@@ -8,16 +8,12 @@ u.FirstName,
 u.LastName,
 u.Email
 FROM logbooks l
-INNER JOIN
-users u 
-ON
-l.OwnedBy = u.Email
-WHERE 
-l.OwnedBy=$1
-LIMIT
-$2
-OFFSET
-$3;
+INNER JOIN users u 
+ON l.OwnedBy = u.Email
+WHERE l.OwnedBy=$1
+ORDER BY CreatedOn DESC
+LIMIT $2
+OFFSET $3;
 
 -- name: GetLogbooks :many
 SELECT

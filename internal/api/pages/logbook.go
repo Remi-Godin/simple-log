@@ -23,5 +23,6 @@ func Logbook(w http.ResponseWriter, r *http.Request) {
 	data.Data["LogbookTitle"] = "This is my logbook"
 	data.Data["LogbookDescription"] = "This is my logbook description"
 	data.Links["Create"] = fmt.Sprintf("/form/logbook/%s/entries", logbookId)
+	data.Links["DeleteLogbook"] = fmt.Sprintf("/logbook/%s", logbookId)
 	utils.RenderTemplate(global.AppData, w, "page-logbook", data)
 }

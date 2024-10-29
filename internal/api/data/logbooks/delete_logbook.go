@@ -26,7 +26,7 @@ func DeleteLogbook(w http.ResponseWriter, r *http.Request) {
 	// if deleted, return 200
 	rowsAffected, err := result.RowsAffected()
 	if rowsAffected > 0 {
-		w.WriteHeader(http.StatusOK)
+		w.Header().Add("HX-Redirect", "/logbook")
 		return
 	}
 	// if nothing got deleted, then no content

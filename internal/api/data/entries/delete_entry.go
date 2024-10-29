@@ -1,6 +1,7 @@
 package entries
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Remi-Godin/simple-log/internal/database"
@@ -29,7 +30,7 @@ func DeleteEntryFromLogbook(w http.ResponseWriter, r *http.Request) {
 	}
 	rowsAffected, err := result.RowsAffected()
 	if rowsAffected > 0 {
-		w.WriteHeader(http.StatusOK)
+		w.Header().Add("HX-Redirect", fmt.Sprintf("/logbook/%d", logbookId))
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)

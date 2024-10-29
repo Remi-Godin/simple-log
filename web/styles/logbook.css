@@ -30,6 +30,9 @@
     --highlight-2-1: #2db0f2;
     --highlight-2-2: #4bb8f2;
     --error: rgb(255, 50, 50);
+    --error-1: #f81212;
+    --error-2: #fe2e2e;
+    --error-3: #ff5151;
     --success: rgb(100, 255, 100);
     --shadow: rgb(0, 0, 0, 0.3);
     /*
@@ -38,6 +41,10 @@
     --gradient-1: linear-gradient(to right, var(--highlight-1-1), var(--highlight-2-2));
     --gradient-2: linear-gradient(to right, var(--highlight-2-1), var(--highlight-2-2));
     --gradient-3: linear-gradient(to right, var(--highlight-1-1), var(--highlight-1-2));
+
+    --gradient-4: linear-gradient(to right, var(--error-1), var(--error-3));
+    --gradient-5: linear-gradient(to right, var(--error-2), var(--error-3));
+    --gradient-6: linear-gradient(to right, var(--error-1), var(--error-2));
 }
 
 html,
@@ -290,11 +297,11 @@ h3 {
     margin-top: 10vh;
 
     /* Sizing for visible dialog */
-    width: 100%;
     max-width: 600px;
 
     /* Display properties for visible dialog*/
     border-radius: 8px;
+    overflow: hidden;
     box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.3);
     background-color: rgba(0, 0, 0, 0);
     padding: 0px;
@@ -471,6 +478,25 @@ input[type="submit"]:hover {
 
 input[type="submit"]:active {
     background: var(--gradient-3);
+}
+
+input[type="submit"].delete {
+    margin-top: 1rem;
+    background: var(--gradient-4);
+    color: white;
+    font-weight: 700;
+    font-size: 1.2em;
+    border-radius: 0.4em;
+    border: 1px grey solid;
+    min-height: 2em;
+}
+
+input[type="submit"].delete:hover {
+    background: var(--gradient-5);
+}
+
+input[type="submit"].delete:active {
+    background: var(--gradient-6);
 }
 
 .form-header {

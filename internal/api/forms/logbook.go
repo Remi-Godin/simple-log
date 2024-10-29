@@ -15,5 +15,5 @@ func Logbook(w http.ResponseWriter, r *http.Request) {
 	data.FormFields = append(data.FormFields, "/field/title")
 	data.FormFields = append(data.FormFields, "/field/description")
 
-	utils.RenderTemplate(global.AppData, w, "com-form", data)
+	utils.RenderTemplate(global.AppData, w, "com-modal", data)
 }

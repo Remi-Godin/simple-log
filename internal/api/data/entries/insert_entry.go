@@ -1,6 +1,7 @@
 package entries
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -40,4 +41,5 @@ func InsertNewEntryInLogbook(w http.ResponseWriter, r *http.Request) {
 		log.Error().Err(err).Msg("Could not complete database query")
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+	w.Header().Add("HX-Redirect", fmt.Sprintf("/logbook/%d", logbookId))
 }

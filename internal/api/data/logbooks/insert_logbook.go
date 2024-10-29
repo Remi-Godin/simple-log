@@ -35,5 +35,6 @@ func InsertLogbook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Add("HX-Redirect", "/logbook")
 	w.WriteHeader(http.StatusCreated)
 }

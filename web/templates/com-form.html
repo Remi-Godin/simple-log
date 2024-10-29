@@ -14,7 +14,10 @@
         <input type="submit" class="button-width height-2" value="Submit"
             {{if.Patch}}hx-patch{{else}}hx-post{{end}}="{{ .FormSubmissionLink }}" hx-include="#form"
             hx-swap="innerHTML" hx-target-error="#form-errors">
-
+        {{ end }}
+        {{ if .ResourceDeletionLink }}
+        <input type="submit" class="button-width height-2 delete" value="Delete" hx-delete="{{ .ResourceDeletionLink }}"
+            hx-include="#form" hx-swap="innerHTML" hx-target-error="#form-errors">
         {{ end }}
         <div id="form-errors" class="form-submission-message">
         </div>

@@ -15,6 +15,7 @@
 <body>
 
     <div class="logbook-container">
+        <div id="modals-here"></div>
 
         <header class="logbook-header">
             <img src="/assets/logo_white.svg" alt="SimpleLog" />
@@ -26,15 +27,13 @@
         <div class="logbook-nav">
             <img title="Add" src="/assets/add_button.svg" alt="Add" class="popup-anim" hx-get="{{.Links.Create}}"
                 hx-swap="outerHTML" />
-            <img title="User Settings" src="/assets/profile.svg" alt="User Settings" class="popup-anim" />
-            <img title="Logout" src="/assets/logout.svg" alt="Logout" class="popup-anim" />
+            {{ if .Links.DeleteLogbook }}
+            <img title="Delete" src="/assets/delete_button.svg" alt="Logout" class="popup-anim"
+                hx-delete="{{ .Links.DeleteLogbook}}" />
+            {{ end }}
         </div>
         <div class="logbook-content">
-            <div class="logbook-menu">
-                MENU GOES HERE
-            </div>
             <div id="main-container" class="logbook-entries-container shadow-inset">
-
                 <div hx-get="{{.Links.InitialLoad}}" hx-trigger="load" hx-swap="innerHTML" hx-target="#main-container">
                 </div>
 
